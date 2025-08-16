@@ -56,14 +56,12 @@ function navigateTo(path) {
 }
 
 function hideAllSections() {
-  // Hide all main sections except nav and footer
   const sectionsToHide = ['home', 'how', 'market', 'creators', 'purchases'];
   sectionsToHide.forEach(id => {
     const el = $('#' + id);
     if (el) el.style.display = 'none';
   });
   
-  // Also hide filters
   const filters = $('.filters');
   if (filters) filters.style.display = 'none';
 }
@@ -71,8 +69,6 @@ function hideAllSections() {
 function showRoute(route) {
   hideAllSections();
   currentRoute = route;
-  
-  console.log('Showing route:', route); // Debug log
   
   switch(route) {
     case 'home':
@@ -88,61 +84,37 @@ function showRoute(route) {
       showPurchases();
       break;
     default:
-      showHome(); // Default to home
+      showHome();
       break;
   }
 }
 
 function showHome() {
-  console.log('Showing home'); // Debug log
   const heroSection = $('#home');
   const howSection = $('#how');
-  if (heroSection) {
-    heroSection.style.display = 'block';
-    console.log('Hero section shown');
-  }
-  if (howSection) {
-    howSection.style.display = 'block';
-    console.log('How section shown');
-  }
+  if (heroSection) heroSection.style.display = 'block';
+  if (howSection) howSection.style.display = 'block';
 }
 
 function showExplore() {
-  console.log('Showing explore'); // Debug log
-  // Show filters and marketplace
   const filtersSection = $('.filters');
   const marketSection = $('#market');
   
-  if (filtersSection) {
-    filtersSection.style.display = 'block';
-    console.log('Filters shown');
-  }
-  if (marketSection) {
-    marketSection.style.display = 'block';
-    console.log('Market shown');
-  }
+  if (filtersSection) filtersSection.style.display = 'block';
+  if (marketSection) marketSection.style.display = 'block';
   
-  // Ensure grid is rendered
   renderGrid(DATA);
   applyFilters();
 }
 
 function showCreators() {
-  console.log('Showing creators'); // Debug log
   const creatorsSection = $('#creators');
-  if (creatorsSection) {
-    creatorsSection.style.display = 'block';
-    console.log('Creators section shown');
-  }
+  if (creatorsSection) creatorsSection.style.display = 'block';
 }
 
 function showPurchases() {
-  console.log('Showing purchases'); // Debug log
   const purchasesSection = $('#purchases');
-  if (purchasesSection) {
-    purchasesSection.style.display = 'block';
-    console.log('Purchases section shown');
-  }
+  if (purchasesSection) purchasesSection.style.display = 'block';
   renderPurchases();
 }
 
@@ -161,7 +133,6 @@ function initDropdownMenu() {
     menuDropdown.style.display = 'block';
     menuTrigger.setAttribute('aria-expanded', 'true');
     
-    // Focus first menu item
     const firstItem = menuDropdown.querySelector('a');
     if (firstItem) firstItem.focus();
   }
@@ -174,7 +145,6 @@ function initDropdownMenu() {
     menuTrigger.focus();
   }
   
-  // Trigger click
   menuTrigger.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -182,7 +152,6 @@ function initDropdownMenu() {
     else openMenu();
   });
   
-  // Menu item clicks - handle navigation
   menuDropdown.addEventListener('click', (e) => {
     if (e.target.tagName === 'A') {
       e.preventDefault();
@@ -194,14 +163,12 @@ function initDropdownMenu() {
     }
   });
   
-  // Outside click
   document.addEventListener('click', (e) => {
     if (isOpen && !menuTrigger.contains(e.target) && !menuDropdown.contains(e.target)) {
       closeMenu();
     }
   });
   
-  // Escape key
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && isOpen) {
       e.preventDefault();
@@ -209,7 +176,6 @@ function initDropdownMenu() {
     }
   });
   
-  // Keyboard navigation in menu
   menuDropdown.addEventListener('keydown', (e) => {
     const items = Array.from(menuDropdown.querySelectorAll('a'));
     const currentIndex = items.indexOf(document.activeElement);
@@ -256,7 +222,6 @@ function renderGrid(list){
   const grid = $('#grid'); 
   if (!grid) return;
   
-  // Hide skeleton when rendering actual content
   const skeleton = $('#skeleton');
   if (skeleton) skeleton.style.display = 'none';
   
@@ -288,22 +253,82 @@ function applyFilters(){
   renderGrid(list);
 }
 
+// ---- FIXED DROPDOWN FUNCTION ----
 function dropdown(rootId, items){
   const root = document.getElementById(rootId);
   if (!root) return;
   
+  const summary = root.querySelector('summary');
   const val = root.querySelector('.value');
   const menu = root.querySelector('.menu');
-  if (!val || !menu) return;
+  if (!val || !menu || !summary) return;
   
+  // Populate menu items
   menu.innerHTML = items.map(([key, text])=>`<button data-k="${key}">${text}</button>`).join('');
-  menu.addEventListener('click', (e)=>{
-    const k = e.target?.dataset?.k; if(!k) return;
-    val.dataset.value = k==='__all' ? '' : k;
-    val.textContent = items.find(x=>x[0]===k)?.[1] || items[0][1];
-    menu.style.display='none';
+  
+  // Handle summary click to toggle dropdown
+  summary.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (root.hasAttribute('open')) {
+      root.removeAttribute('open');
+    } else {
+      root.setAttribute('open', '');
+    }
+  });
+  
+  // Handle menu item selection
+  menu.addEventListener('click', (e) => {
+    const k = e.target?.dataset?.k;
+    if (!k) return;
+    
+    // Update the selected value
+    val.dataset.value = k === '__all' ? '' : k;
+    val.textContent = items.find(x => x[0] === k)?.[1] || items[0][1];
+    
+    // Close the dropdown
     root.removeAttribute('open');
+    
+    // Apply filters
     applyFilters();
+  });
+  
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!root.contains(e.target)) {
+      root.removeAttribute('open');
+    }
+  });
+  
+  // Handle keyboard navigation
+  root.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      root.removeAttribute('open');
+      summary.focus();
+    }
+  });
+  
+  // Handle keyboard navigation within menu
+  menu.addEventListener('keydown', (e) => {
+    const buttons = Array.from(menu.querySelectorAll('button'));
+    const currentIndex = buttons.indexOf(e.target);
+    
+    switch(e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        const nextIndex = currentIndex < buttons.length - 1 ? currentIndex + 1 : 0;
+        buttons[nextIndex].focus();
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        const prevIndex = currentIndex > 0 ? currentIndex - 1 : buttons.length - 1;
+        buttons[prevIndex].focus();
+        break;
+      case 'Enter':
+      case ' ':
+        e.preventDefault();
+        e.target.click();
+        break;
+    }
   });
 }
 
@@ -437,7 +462,6 @@ async function buyPrompt(id){
     if (brief.length < 3) return toast('Please enter a short brief.');
     if (!contact) return toast('Add your contact (email or Telegram).');
 
-    // FREE flow
     if (p.price <= 0) {
       savePurchase(id, 'FREE', brief, contact);
       openModal(id, true, null);
@@ -476,7 +500,6 @@ async function buyPrompt(id){
 
 // ---- Event Handlers ----
 function setupEventHandlers() {
-  // Copy button
   const copyBtn = $('#copyBtn');
   if (copyBtn) {
     copyBtn.onclick = () => { 
@@ -488,21 +511,17 @@ function setupEventHandlers() {
     };
   }
   
-  // Close modal
   window.closeModal = () => { 
     const modal = $('#modal');
     if (modal) modal.style.display = 'none'; 
   };
   
-  // Wallet button
   const walletBtn = $('#walletBtn');
   if (walletBtn) walletBtn.onclick = toggleWallet;
   
-  // Search input
   const searchInput = $('#q');
   if (searchInput) searchInput.addEventListener('input', applyFilters);
   
-  // Handle navigation clicks
   document.addEventListener('click', (e) => {
     if (e.target.tagName === 'A' && e.target.getAttribute('href')?.startsWith('#')) {
       e.preventDefault();
@@ -511,7 +530,6 @@ function setupEventHandlers() {
     }
   });
   
-  // Hash change for routing
   window.addEventListener('hashchange', () => {
     const route = getRoute();
     showRoute(route);
@@ -529,21 +547,14 @@ window.addEventListener('load', async () => {
     toast('Failed to init Solana SDK'); 
   }
 
-  // Setup dropdowns
   dropdown('cat', [['__all','All'], ['Design','Design'], ['Marketing','Marketing'], ['Crypto','Crypto'], ['Content','Content']]);
   dropdown('sort', [['default','Default'], ['priceAsc','Price ↑'], ['priceDesc','Price ↓'], ['alpha','A → Z']]);
 
-  // Setup event handlers
   setupEventHandlers();
-  
-  // Initialize dropdown menu
   initDropdownMenu();
   
-  // Initialize routing
   const initialRoute = getRoute();
-  console.log('Initial route:', initialRoute); // Debug log
   showRoute(initialRoute);
   
-  // Initial render for purchases
   renderPurchases();
 });
