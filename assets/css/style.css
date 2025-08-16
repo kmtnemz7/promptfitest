@@ -70,10 +70,20 @@ nav {
 }
 /* Ensure "Connect Wallet" matches other nav buttons */
 .nav-actions .btn {
-  padding: 12px 18px; /* Match padding of other buttons */
-  border-radius: 14px; /* Match border-radius */
-  background: rgba(255, 255, 255, .05); /* Match background */
-  color: var(--txt); /* Ensure text color matches other buttons */
+  padding: 12px 18px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .05);
+  color: var(--txt);
+}
+/* Handle "Connect Wallet" glow state */
+.nav-actions .btn.glow {
+  background: linear-gradient(90deg, var(--g1), var(--g2));
+  color: #0b0d12;
+  border: none;
+}
+.nav-actions .btn.glow:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 10px 44px rgba(168, 85, 247, .25);
 }
 .btn.glow {
   background: linear-gradient(90deg, var(--g1), var(--g2));
@@ -86,10 +96,13 @@ nav {
   transform: translateY(-1px);
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 10px 44px rgba(168, 85, 247, .25);
 }
-/* Update marketplace grey buttons to white text */
-.prompt-card .btn {
-  color: #ffffff; /* White text for better visibility */
-  background: rgba(255, 255, 255, .05); /* Retain grey background */
+/* Update marketplace grey buttons to white text with higher specificity */
+#grid .prompt-card .btn {
+  color: #ffffff;
+  background: rgba(255, 255, 255, .05);
+}
+#grid .prompt-card .btn.glow {
+  color: #0b0d12; /* Retain dark text for glow buttons */
 }
 .badge {
   font-size: 12px;
