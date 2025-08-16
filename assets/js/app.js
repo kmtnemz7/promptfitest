@@ -559,36 +559,37 @@ window.addEventListener('load', async () => {
   renderPurchases();
 });
 // --- Page loader (3s on first load and route changes) ---
+(// --- Page loader (duration control) ---
 (function () {
+  const LOAD_MS = 1500; // ← set your duration here (in ms)
+
   const loader = document.getElementById('pageLoader');
   if (!loader) return;
 
   function hideLoader(){ loader.classList.add('is-hidden'); }
-  function showLoader(ms=3000){
+  function showLoader(ms = LOAD_MS){
     loader.classList.remove('is-hidden');
     return new Promise(res => setTimeout(() => { hideLoader(); res(); }, ms));
   }
 
-  // Initial load: keep visible, then hide after 3s
+  // Initial load
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => setTimeout(hideLoader, 3000));
+    document.addEventListener('DOMContentLoaded', () => setTimeout(hideLoader, LOAD_MS));
   } else {
-    setTimeout(hideLoader, 3000);
+    setTimeout(hideLoader, LOAD_MS);
   }
 
-  // Show loader when navigating via internal links (class="internal-link")
+  // Internal link transitions
   document.addEventListener('click', (e) => {
     const a = e.target.closest('a.internal-link');
     if (!a) return;
     const href = a.getAttribute('href') || '';
-    // Only delay for real page switches (paths), not hash jumps
     if (href && href.startsWith('/')) {
       e.preventDefault();
-      showLoader(3000).then(() => { window.location.href = href; });
+      showLoader(LOAD_MS).then(() => { window.location.href = href; });
     }
   });
 
-  // Expose for manual use if you add a client router later
   window.PFLoader = { show: showLoader, hide: hideLoader };
 })();
 
