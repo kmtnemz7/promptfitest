@@ -1,166 +1,149 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>PromptFi — Decentralized Prompt Marketplace</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css" />
-    <link rel="manifest" href="manifest.json" />
-    <link rel="icon" href="assets/img/favicon.png" type="image/png" />
-    <script src="https://unpkg.com/@solana/web3.js@1.95.3/lib/index.iife.min.js" defer></script>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PromptFi — Decentralized Prompt Marketplace</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/style.css"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="icon" href="assets/img/favicon.png" type="image/png"/>
+<script src="https://unpkg.com/@solana/web3.js@1.95.3/lib/index.iife.min.js" defer></script>
 </head>
 <body>
-    <nav>
-        <div class="container navbar">
-            <a href="/" class="brand internal-link">PromptFi</a>
-            <div class="nav-actions">
-                <button id="walletBtn" class="btn glow">Connect Wallet</button>
-                <details id="menu" class="select">
-                    <summary class="input trigger" role="button" aria-haspopup="menu" aria-expanded="false">Menu</summary>
-                    <div class="menu">
-                        <a href="/explore" role="menuitem" class="internal-link">Explore</a>
-                        <a href="/purchases" role="menuitem" class="internal-link">My Purchases</a>
-                        <a href="/creators" role="menuitem" class="internal-link">Creators</a>
-                    </div>
-                </details>
-            </div>
-        </div>
-    </nav>
-
-    <section id="home" class="hero">
-        <div class="hero-bg"></div>
-        <div class="container" style="padding: 48px 0">
-            <div class="grid grid-2">
-                <div>
-                    <span class="badge">Crypto-native prompt marketplace</span>
-                    <h1>Turn Your AI Prompts Into Crypto Assets</h1>
-                    <p class="muted">Buy high-quality prompts with SOL. Unlock instantly after confirmed payment.</p>
-                    <div style="display: flex; gap: 12px; margin-top: 16px">
-                        <a href="/explore" class="btn glow internal-link">Explore Prompts</a>
-                        <a href="/" class="btn internal-link">How it works</a>
-                    </div>
-                </div>
-                <div class="hero-art" aria-hidden="true"></div>
-            </div>
-        </div>
-    </section>
-
-    <div class="toast" id="toast"></div>
-
-    <section class="container filters" style="margin-top: 12px; overflow: visible">
-        <div class="card card-body" style="overflow: visible">
-            <div class="grid" style="grid-template-columns: 2fr 1fr 1fr; gap: 12px; align-items: end; overflow: visible">
-                <label>Search
-                    <input id="q" class="input" placeholder="Search title or category" />
-                </label>
-                <details id="cat" class="select">
-                    <summary class="input trigger">
-                        <span>Category</span>
-                        <span id="cat_val" class="value" data-value="">All</span>
-                    </summary>
-                    <div class="menu"></div>
-                </details>
-                <details id="sort" class="select">
-                    <summary class="input trigger">
-                        <span>Sort</span>
-                        <span id="sort_val" class="value" data-value="default">Default</span>
-                    </summary>
-                    <div class="menu"></div>
-                </details>
-            </div>
-        </div>
-    </section>
-
-    <section id="market" class="container" style="padding: 20px 0 8px">
-        <div class="kv" style="margin-bottom: 8px">
-            <h2>Marketplace</h2>
-            <div id="addr" class="muted">Wallet: not connected</div>
-        </div>
-        <div id="skeleton" class="grid grid-3">
-            <div class="skel"></div>
-            <div class="skel"></div>
-            <div class="skel"></div>
-        </div>
-        <div id="grid" class="grid grid-3" style="margin-top: 12px"></div>
-    </section>
-
-    <section id="how" class="container" style="padding-bottom: 20px">
-        <h2>How it works</h2>
-        <div class="grid grid-3">
-            <div class="card card-body">
-                <h3>Connect</h3>
-                <p class="muted">Connect Phantom (click again to disconnect).</p>
-            </div>
-            <div class="card card-body">
-                <h3>Buy</h3>
-                <p class="muted">Pay the listed SOL amount to unlock a prompt.</p>
-            </div>
-            <div class="card card-body">
-                <h3>Unlock</h3>
-                <p class="muted">After finalized confirmation, the full prompt is revealed.</p>
-            </div>
-        </div>
-    </section>
-
-    <section id="creators" class="container" style="padding-bottom: 20px">
-        <h2>Creators (coming soon)</h2>
-        <div class="card card-body">
-            <p class="muted" style="margin-top: 0">
-                PromptFi will let creators list prompts, set SOL pricing, and get paid non‑custodially. Listings will be stored on IPFS with on‑chain receipts. Join the waitlist and be first to sell.
-            </p>
-            <div style="display: flex; gap: 8px; flex-wrap: wrap">
-                <input id="wlEmail" class="input" placeholder="Email or Telegram" />
-                <button class="btn glow" onclick="localStorage.setItem('pf_waitlist', (localStorage.getItem('pf_waitlist')||'') + '\n' + document.getElementById('wlEmail').value); this.textContent='Joined ✓';">Join Waitlist</button>
-            </div>
-        </div>
-    </section>
-
-    <section id="purchases" class="container" style="padding-bottom: 24px">
-        <h2>My Purchases</h2>
-        <div id="purchasesList" class="card card-body">No purchases yet.</div>
-    </section>
-
-    <footer>
-        <div class="container" style="display: flex; align-items: center; justify-content: space-between">
-            <span>© 2025 PromptFi</span>
-            <div style="display: flex; gap: 12px">
-                <a href="#market">Marketplace</a>
-                <a href="#purchases">My Purchases</a>
-                <a href="#how">How it works</a>
-            </div>
-        </div>
-    </footer>
-
-    <div id="modal" class="modal">
-        <div class="box">
-            <div class="kv">
-                <h3 id="mTitle" style="margin: 0">Prompt</h3>
-                <button class="btn" onclick="closeModal()">✕</button>
-            </div>
-            <p id="mMeta" class="muted" style="margin: 6px 0 0"></p>
-            <div class="card" style="margin-top: 12px">
-                <div class="card-body">
-                    <label>Brief (what do you need?)
-                        <textarea id="uBrief" class="input" rows="3" placeholder="Describe what you need (topic, tone, goal)…"></textarea>
-                    </label>
-                    <div class="grid" style="grid-template-columns: 3fr 1fr; gap: 10px; margin-top: 10px">
-                        <input id="uContact" class="input" placeholder="Your contact (email or Telegram)" />
-                        <button id="buyNow" class="btn glow">Buy & Unlock</button>
-                    </div>
-                </div>
-            </div>
-            <div style="height: 160px; border: 1px solid var(--b); border-radius: 12px; margin-top: 12px; background:
-                radial-gradient(90px 90px at 20% 30%, rgba(168,85,247,.25), transparent 60%),
-                radial-gradient(90px 90px at 80% 40%, rgba(6,182,212,.25), transparent 60%);"></div>
-            <p id="mText" style="margin-top: 12px"></p>
-            <div style="display: flex; gap: 8px; margin-top: 12px">
-                <a id="txLink" target="_blank" class="btn hidden">View on Solscan</a>
-                <button id="copyBtn" class="btn hidden">Copy Prompt</button>
-            </div>
-        </div>
+  <nav>
+    <div class="container navbar">
+      <a href="#home" class="brand">PromptFi</a>
+      <div class="nav-actions">
+        <a href="#market" class="btn">Explore</a>
+        <a href="#purchases" class="btn">My Purchases</a>
+        <a href="#creators" class="btn">Creators</a>
+        <a href="#how" class="btn">How</a>
+        <button id="walletBtn" class="btn glow" style="padding: 12px 18px; border-radius: 14px;">Connect Wallet</button>
+      </div>
     </div>
+  </nav>
 
-    <script src="assets/js/app.js"></script>
+  <section id="home" class="hero">
+    <div class="hero-bg"></div>
+    <div class="container" style="padding:48px 0">
+      <div class="grid grid-2">
+        <div>
+          <span class="badge">Crypto-native prompt marketplace</span>
+          <h1>Turn Your AI Prompts Into Crypto Assets</h1>
+          <p class="muted">Buy high-quality prompts with SOL. Unlock instantly after confirmed payment.</p>
+          <div style="display:flex;gap:12px;margin-top:16px">
+            <a href="#market" class="btn glow">Explore Prompts</a>
+            <a href="#how" class="btn">How it works</a>
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true" style="height: 100%; min-height: 240px;"> <!-- Updated to match left content height -->
+          <img src="assets/img/hero-art.png" alt="Hero artwork for PromptFi" style="width: 100%; height: 100%; object-fit: cover; border-radius: 22px; border: 1px solid var(--b);">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+
+  <section class="container filters" style="margin-top:12px;overflow:visible">
+    <div class="card card-body" style="overflow:visible">
+      <div class="grid" style="grid-template-columns:2fr 1fr 1fr;gap:12px;align-items:end;overflow:visible">
+        <label>Search<input id="q" class="input" placeholder="Search title or category"/></label>
+
+        <details id="cat" class="select">
+          <summary class="input trigger"><span>Category</span><span id="cat_val" class="value" data-value="">All</span></summary>
+          <div class="menu"></div>
+        </details>
+
+        <details id="sort" class="select">
+          <summary class="input trigger"><span>Sort</span><span id="sort_val" class="value" data-value="default">Default</span></summary>
+          <div class="menu"></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section id="market" class="container" style="padding:20px 0 8px">
+    <div class="kv" style="margin-bottom:8px">
+      <h2>Marketplace</h2>
+      <div id="addr" class="muted">Wallet: not connected</div>
+    </div>
+    <div id="skeleton" class="grid grid-3">
+      <div class="skel"></div><div class="skel"></div><div class="skel"></div>
+    </div>
+    <div id="grid" class="grid grid-3" style="margin-top:12px"></div>
+  </section>
+
+  <section id="how" class="container" style="padding-bottom:20px">
+    <h2>How it works</h2>
+    <div class="grid grid-3">
+      <div class="card card-body"><h3>Connect</h3><p class="muted">Connect Phantom (click again to disconnect).</p></div>
+      <div class="card card-body"><h3>Buy</h3><p class="muted">Pay the listed SOL amount to unlock a prompt.</p></div>
+      <div class="card card-body"><h3>Unlock</h3><p class="muted">After finalized confirmation, the full prompt is revealed.</p></div>
+    </div>
+  </section>
+
+  <section id="creators" class="container" style="padding-bottom:20px">
+    <h2>Creators (coming soon)</h2>
+    <div class="card card-body">
+      <p class="muted" style="margin-top:0">
+        PromptFi will let creators list prompts, set SOL pricing, and get paid non‑custodially. Listings will be stored on IPFS with on‑chain receipts. Join the waitlist and be first to sell.
+      </p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <input id="wlEmail" class="input" placeholder="Email or Telegram"/>
+        <button class="btn glow" onclick="localStorage.setItem('pf_waitlist', (localStorage.getItem('pf_waitlist')||'') + '\n' + document.getElementById('wlEmail').value); this.textContent='Joined ✓';">Join Waitlist</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="purchases" class="container" style="padding-bottom:24px">
+    <h2>My Purchases</h2>
+    <div id="purchasesList" class="card card-body">No purchases yet.</div>
+  </section>
+
+  <footer>
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between">
+      <span>© 2025 PromptFi</span>
+      <div style="display:flex;gap:12px">
+        <a href="#market">Marketplace</a>
+        <a href="#purchases">My Purchases</a>
+        <a href="#how">How it works</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="box">
+      <div class="kv">
+        <h3 id="mTitle" style="margin:0">Prompt</h3>
+        <button class="btn" onclick="closeModal()">✕</button>
+      </div>
+      <p id="mMeta" class="muted" style="margin:6px 0 0"></p>
+
+      <div class="card" style="margin-top:12px">
+        <div class="card-body">
+          <label>Brief (what do you need?)<textarea id="uBrief" class="input" rows="3" placeholder="Describe what you need (topic, tone, goal)…"></textarea></label>
+          <div class="grid" style="grid-template-columns:3fr 1fr;gap:10px;margin-top:10px">
+            <input id="uContact" class="input" placeholder="Your contact (email or Telegram)"/>
+            <button id="buyNow" class="btn glow">Buy & Unlock</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:160px;border:1px solid var(--b);border-radius:12px;margin-top:12px;background:
+        radial-gradient(90px 90px at 20% 30%, rgba(168,85,247,.25), transparent 60%),
+        radial-gradient(90px 90px at 80% 40%, rgba(6,182,212,.25), transparent 60%);"></div>
+
+      <p id="mText" style="margin-top:12px"></p>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <a id="txLink" target="_blank" class="btn hidden">View on Solscan</a>
+        <button id="copyBtn" class="btn hidden">Copy Prompt</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/app.js"></script>
 </body>
 </html>
