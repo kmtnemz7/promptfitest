@@ -15,6 +15,7 @@
     <div class="container navbar">
       <a href="/" class="brand internal-link">PromptFi</a>
       <div class="nav-actions">
+        <button id="walletBtn" class="btn glow">Connect Wallet</button> <!-- Moved to left of menu -->
         <details id="menu" class="select">
           <summary class="input trigger" role="button" aria-haspopup="menu" aria-expanded="false">Menu</summary>
           <div class="menu">
@@ -23,7 +24,6 @@
             <a href="/creators" role="menuitem" class="internal-link">Creators</a>
           </div>
         </details>
-        <button id="walletBtn" class="btn glow">Connect Wallet</button>
       </div>
     </div>
   </nav>
@@ -48,7 +48,7 @@
 
   <div class="toast" id="toast"></div>
 
-  <section id="filters" class="container filters" style="margin-top:12px;overflow:visible; display: none;">
+  <section class="container filters" style="margin-top:12px;overflow:visible">
     <div class="card card-body" style="overflow:visible">
       <div class="grid" style="grid-template-columns:2fr 1fr 1fr;gap:12px;align-items:end;overflow:visible">
         <label>Search<input id="q" class="input" placeholder="Search title or category"/></label>
@@ -66,7 +66,7 @@
     </div>
   </section>
 
-  <section id="market" class="container" style="padding:20px 0 8px; display: none;">
+  <section id="market" class="container" style="padding:20px 0 8px">
     <div class="kv" style="margin-bottom:8px">
       <h2>Marketplace</h2>
       <div id="addr" class="muted">Wallet: not connected</div>
@@ -78,7 +78,7 @@
   </section>
 
   <section id="how" class="container" style="padding-bottom:20px">
-    <h2>How to Buy</h2>
+    <h2>How it works</h2>
     <div class="grid grid-3">
       <div class="card card-body"><h3>Connect</h3><p class="muted">Connect Phantom (click again to disconnect).</p></div>
       <div class="card card-body"><h3>Buy</h3><p class="muted">Pay the listed SOL amount to unlock a prompt.</p></div>
@@ -86,8 +86,8 @@
     </div>
   </section>
 
-  <section id="creators" class="container" style="padding-bottom:20px; display: none;">
-    <h2>Creators (coming soon</h2>
+  <section id="creators" class="container" style="padding-bottom:20px">
+    <h2>Creators (coming soon)</h2>
     <div class="card card-body">
       <p class="muted" style="margin-top:0">
         PromptFi will let creators list prompts, set SOL pricing, and get paid non‑custodially. Listings will be stored on IPFS with on‑chain receipts. Join the waitlist and be first to sell.
@@ -99,24 +99,18 @@
     </div>
   </section>
 
-  <section id="purchases" class="container" style="padding-bottom:24px; display: none;">
+  <section id="purchases" class="container" style="padding-bottom:24px">
     <h2>My Purchases</h2>
     <div id="purchasesList" class="card card-body">No purchases yet.</div>
-  </section>
-
-  <section id="not-found" class="container" style="padding:20px 0; display: none;">
-    <h2>404 - Page Not Found</h2>
-    <p class="muted">The page you are looking for does not exist.</p>
-    <a href="/" class="btn internal-link">Go to Home</a>
   </section>
 
   <footer>
     <div class="container" style="display:flex;align-items:center;justify-content:space-between">
       <span>© 2025 PromptFi</span>
       <div style="display:flex;gap:12px">
-        <a href="/explore" class="internal-link">Marketplace</a>
-        <a href="/purchases" class="internal-link">My Purchases</a>
-        <a href="/" class="internal-link">How it works</a>
+        <a href="#market">Marketplace</a>
+        <a href="#purchases">My Purchases</a>
+        <a href="#how">How it works</a>
       </div>
     </div>
   </footer>
