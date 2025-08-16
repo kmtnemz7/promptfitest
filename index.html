@@ -205,34 +205,33 @@
 
 
 	  
-    <section class="container filters" style="margin-top:12px;overflow:visible; display:none;">
-      <div class="card card-body" style="overflow:visible">
-        <div class="grid" style="grid-template-columns:2fr 1fr 1fr;gap:12px;align-items:end;overflow:visible">
-          <label>Search<input id="q" class="input" placeholder="Search title or category"/></label>
-
-          <details id="cat" class="select">
-            <summary class="input trigger"><span>Category</span><span id="cat_val" class="value" data-value="">All</span></summary>
-            <div class="menu"></div>
-          </details>
-
-          <details id="sort" class="select">
-            <summary class="input trigger"><span>Sort</span><span id="sort_val" class="value" data-value="default">Default</span></summary>
-            <div class="menu"></div>
-          </details>
-        </div>
-      </div>
-    </section>
-
-    <section id="market" class="container" style="padding:20px 0 8px; display:none;">
-      <div class="kv" style="margin-bottom:8px">
-        <h2>Marketplace</h2>
-        <div id="addr" class="badge">Wallet: not connected</div>
-      </div>
-      <div id="skeleton" class="grid grid-3">
-        <div class="skel"></div><div class="skel"></div><div class="skel"></div>
-      </div>
-      <div id="grid" class="grid grid-3" style="margin-top:12px"></div>
-    </section>
+	<section id="market" class="container" style="padding:20px 0 8px; display:none;">
+ 	 <div class="kv" style="margin-bottom:8px">
+  	  <h2>Marketplace</h2>
+  	  <div id="addr" class="badge">Wallet: not connected</div>
+	  </div>
+  
+	  <section class="container filters" style="margin-top:12px;overflow:visible; display:none;">
+ 	   <div class="card card-body" style="overflow:visible">
+   	   <div class="grid" style="grid-template-columns:2fr 1fr 1fr;gap:12px;align-items:end;overflow:visible">
+      	  <label>Search<input id="q" class="input" placeholder="Search title or category"/></label>
+     	   <details id="cat" class="select">
+        	  <summary class="input trigger"><span>Category</span><span id="cat_val" class="value" data-value="">All</span></summary>
+        	  <div class="menu"></div>
+      	  </details>
+     	   <details id="sort" class="select">
+       	   <summary class="input trigger"><span>Sort</span><span id="sort_val" class="value" data-value="default">Default</span></summary>
+         	 <div class="menu"></div>
+       	 </details>
+     	 </div>
+   	 </div>
+ 	 </section>
+  
+ 	 <div id="skeleton" class="grid grid-3">
+  	  <div class="skel"></div><div class="skel"></div><div class="skel"></div>
+	  </div>
+ 	 <div id="grid" class="grid grid-3" style="margin-top:12px"></div>
+	</section>
 
     <section id="creators" class="container" style="padding-bottom:20px; display:none;">
       <h2>Creators (coming soon)</h2>
