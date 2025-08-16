@@ -59,6 +59,9 @@ nav {
   transition: transform .2s, box-shadow .2s;
   white-space: nowrap;
   font-weight: 600;
+  display: inline-block;
+  box-sizing: border-box;
+  outline: none;
 }
 .btn:hover {
   transform: translateY(-1px);
@@ -68,6 +71,7 @@ nav {
   background: linear-gradient(90deg, var(--g1), var(--g2));
   color: #0b0d12;
   box-shadow: 0 10px 44px rgba(168, 85, 247, .25);
+  border: none;
 }
 .btn.glow:hover {
   transform: translateY(-1px);
@@ -153,7 +157,7 @@ footer {
   border: 1px solid var(--b);
   background: rgba(255, 255, 255, .06);
   border-radius: 22px;
-  animation: pulse 1.2s infinite EAS-in-out
+  animation: pulse 1.2s infinite ease-in-out
 }
 @keyframes pulse {
   0% {
