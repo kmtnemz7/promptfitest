@@ -63,12 +63,22 @@ nav {
   box-sizing: border-box;
   outline: none;
   font-family: Poppins, Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--txt);
 }
 .btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
 }
+.btn:focus {
+  outline: 2px solid var(--g1);
+  outline-offset: 2px;
+}
 /* Ensure "Connect Wallet" matches other nav buttons */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 .nav-actions .btn {
   padding: 12px 18px;
   border-radius: 14px;
@@ -112,6 +122,42 @@ nav {
   transform: translateY(-1px);
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 10px 44px rgba(168, 85, 247, .25);
 }
+
+/* Dropdown Menu Styles */
+.dropdown-container {
+  position: relative;
+}
+#menu-dropdown {
+  border: 1px solid var(--b);
+  background: rgba(9, 11, 18, .98);
+  border-radius: 12px;
+  max-height: 260px;
+  overflow: auto;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, .3);
+}
+#menu-dropdown a {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 16px;
+  color: var(--txt);
+  cursor: pointer;
+  font-family: Poppins, Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+  font-weight: 600;
+  transition: background-color .2s;
+  border: none;
+  background: transparent;
+}
+#menu-dropdown a:hover,
+#menu-dropdown a:focus {
+  background: rgba(255, 255, 255, .08);
+  outline: none;
+}
+#menu-dropdown a:focus {
+  background: rgba(168, 85, 247, .15);
+}
+
 .badge {
   font-size: 12px;
   padding: 4px 8px;
@@ -150,7 +196,7 @@ h2 {
 .grid {
   display: grid;
   gap: 16px;
-  align-items: stretch; /* Added to force equal heights in grid-2 */
+  align-items: stretch;
 }
 .grid-2 {
   grid-template-columns: 1fr 1fr
@@ -179,7 +225,12 @@ h2 {
   border-radius: 12px;
   border: 1px solid var(--b);
   background: rgba(255, 255, 255, .05);
-  color: var(--txt)
+  color: var(--txt);
+  font-family: Poppins, Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+}
+.input:focus {
+  outline: 2px solid var(--g1);
+  outline-offset: 2px;
 }
 .filters .grid {
   align-items: end
@@ -239,13 +290,13 @@ footer {
   padding: 18px
 }
 .hero-art {
-  height: auto; /* Removed fixed height */
-  min-height: 240px; /* Retain minimum height for consistency */
+  height: auto;
+  min-height: 240px;
   border: 1px solid var(--b);
   border-radius: 22px;
   background: radial-gradient(120px 120px at 20% 30%, rgba(168, 85, 247, .25), transparent 60%), radial-gradient(140px 140px at 80% 40%, rgba(6, 182, 212, .25), transparent 60%), radial-gradient(160px 160px at 50% 80%, rgba(59, 130, 246, .25), transparent 60%);
-  display: flex; /* Ensure image fills height */
-  align-items: stretch; /* Stretch the image to fill the container */
+  display: flex;
+  align-items: stretch;
 }
 /* Custom dropdown with <details> */
 .select {
@@ -293,6 +344,9 @@ footer {
 .menu button:hover {
   background: rgba(255, 255, 255, .06)
 }
+.hidden {
+  display: none;
+}
 /* Mobile */
 @media (max-width: 900px) {
   .grid-2,
@@ -303,8 +357,8 @@ footer {
     font-size: 34px
   }
   .hero-art {
-    height: auto; /* Ensure responsiveness */
-    min-height: 180px; /* Adjusted min-height for smaller screens */
+    height: auto;
+    min-height: 180px;
   }
 }
 @media (max-width: 420px) {
@@ -318,5 +372,9 @@ footer {
   }
   .filters .grid {
     grid-template-columns: 1fr 1fr
+  }
+  #menu-dropdown {
+    right: -16px;
+    min-width: 140px;
   }
 }
