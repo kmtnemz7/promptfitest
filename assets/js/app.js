@@ -28,12 +28,209 @@ const DATA = [
 let connection = null;
 let provider = null;
 let walletPubkey = null;
+let currentRoute = '';
 
 const $ = (s)=>document.querySelector(s);
 const $$ = (s)=>Array.from(document.querySelectorAll(s));
 const toast=(m)=>{const t=$('#toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2400)};
 const priceLabel=(n)=> (n<=0? 'FREE' : (Math.round(n*100)/100).toFixed(2)+' SOL');
 
+// ---- Router ----
+const routes = {
+  '': 'home',
+  'explore': 'explore', 
+  'creators': 'creators',
+  'purchases': 'purchases'
+};
+
+function getRoute() {
+  const hash = window.location.hash.slice(1);
+  const route = hash.split('/')[0];
+  return routes[route] || '404';
+}
+
+function navigateTo(path) {
+  if (path.startsWith('#')) path = path.slice(1);
+  window.location.hash = '#' + path;
+}
+
+function hideAllSections() {
+  const sections = ['home', 'explore', 'creators', 'purchases', 'market', 'how', '404'];
+  sections.forEach(id => {
+    const el = $(`#${id}`) || $(`[data-page="${id}"]`);
+    if (el) el.style.display = 'none';
+  });
+  
+  // Hide sections that exist in markup
+  const existingSections = $$('section');
+  existingSections.forEach(section => {
+    if (section.id && section.id !== 'home') {
+      section.style.display = 'none';
+    }
+  });
+}
+
+function showRoute(route) {
+  hideAllSections();
+  currentRoute = route;
+  
+  const container = $('#main-content');
+  if (!container) return;
+  
+  switch(route) {
+    case 'home':
+      showHome();
+      break;
+    case 'explore':
+      showExplore(); 
+      break;
+    case 'creators':
+      showCreators();
+      break;
+    case 'purchases':
+      showPurchases();
+      break;
+    case '404':
+      show404();
+      break;
+  }
+}
+
+function showHome() {
+  const heroSection = $('#home');
+  const howSection = $('#how');
+  if (heroSection) heroSection.style.display = 'block';
+  if (howSection) howSection.style.display = 'block';
+}
+
+function showExplore() {
+  // Show filters and marketplace
+  const filtersSection = $('.filters');
+  const marketSection = $('#market');
+  if (filtersSection) filtersSection.style.display = 'block';
+  if (marketSection) marketSection.style.display = 'block';
+  
+  // Ensure grid is rendered
+  renderGrid(DATA);
+  applyFilters();
+}
+
+function showCreators() {
+  const creatorsSection = $('#creators');
+  if (creatorsSection) creatorsSection.style.display = 'block';
+}
+
+function showPurchases() {
+  const purchasesSection = $('#purchases');
+  if (purchasesSection) purchasesSection.style.display = 'block';
+  renderPurchases();
+}
+
+function show404() {
+  let notFoundSection = $('#not-found');
+  if (!notFoundSection) {
+    // Create 404 section dynamically
+    const container = document.body;
+    notFoundSection = document.createElement('section');
+    notFoundSection.id = 'not-found';
+    notFoundSection.className = 'container';
+    notFoundSection.style.cssText = 'padding: 80px 0; text-align: center;';
+    notFoundSection.innerHTML = `
+      <h1 style="font-size: 48px; margin-bottom: 16px;">404</h1>
+      <p class="muted" style="font-size: 18px; margin-bottom: 24px;">Page not found</p>
+      <a href="#" class="btn glow">Return Home</a>
+    `;
+    container.appendChild(notFoundSection);
+  }
+  notFoundSection.style.display = 'block';
+}
+
+// ---- Dropdown Menu ----
+function initDropdownMenu() {
+  const menuTrigger = $('#menu-trigger');
+  const menuDropdown = $('#menu-dropdown');
+  
+  if (!menuTrigger || !menuDropdown) return;
+  
+  let isOpen = false;
+  
+  function openMenu() {
+    if (isOpen) return;
+    isOpen = true;
+    menuDropdown.style.display = 'block';
+    menuTrigger.setAttribute('aria-expanded', 'true');
+    
+    // Focus first menu item
+    const firstItem = menuDropdown.querySelector('a');
+    if (firstItem) firstItem.focus();
+  }
+  
+  function closeMenu() {
+    if (!isOpen) return;
+    isOpen = false;
+    menuDropdown.style.display = 'none';
+    menuTrigger.setAttribute('aria-expanded', 'false');
+    menuTrigger.focus();
+  }
+  
+  // Trigger click
+  menuTrigger.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isOpen) closeMenu();
+    else openMenu();
+  });
+  
+  // Menu item clicks
+  menuDropdown.addEventListener('click', (e) => {
+    if (e.target.tagName === 'A') {
+      closeMenu();
+    }
+  });
+  
+  // Outside click
+  document.addEventListener('click', (e) => {
+    if (isOpen && !menuTrigger.contains(e.target) && !menuDropdown.contains(e.target)) {
+      closeMenu();
+    }
+  });
+  
+  // Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen) {
+      e.preventDefault();
+      closeMenu();
+    }
+  });
+  
+  // Keyboard navigation in menu
+  menuDropdown.addEventListener('keydown', (e) => {
+    const items = Array.from(menuDropdown.querySelectorAll('a'));
+    const currentIndex = items.indexOf(document.activeElement);
+    
+    switch(e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        const nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
+        items[nextIndex].focus();
+        break;
+      case 'ArrowUp':
+        e.preventDefault(); 
+        const prevIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
+        items[prevIndex].focus();
+        break;
+      case 'Tab':
+        if (e.shiftKey && currentIndex === 0) {
+          closeMenu();
+        } else if (!e.shiftKey && currentIndex === items.length - 1) {
+          closeMenu();
+        }
+        break;
+    }
+  });
+}
+
+// ---- Card and Grid Functions ----
 const card=(p)=>`
   <article class="card prompt-card" style="display: flex; flex-direction: column;">
     <div style="height:160px;border-bottom:1px solid var(--b);background:
@@ -51,6 +248,8 @@ const card=(p)=>`
 
 function renderGrid(list){
   const grid = $('#grid'); 
+  if (!grid) return;
+  
   // Hide skeleton when rendering actual content
   const skeleton = $('#skeleton');
   if (skeleton) skeleton.style.display = 'none';
@@ -61,14 +260,22 @@ function renderGrid(list){
 }
 
 function applyFilters(){
-  const q = $('#q').value.toLowerCase().trim();
-  const cat = $('#cat_val').dataset.value || '';
-  const sort = $('#sort_val').dataset.value || 'default';
+  const q = $('#q');
+  const catVal = $('#cat_val');
+  const sortVal = $('#sort_val');
+  
+  if (!q || !catVal || !sortVal) return;
+  
+  const query = q.value.toLowerCase().trim();
+  const cat = catVal.dataset.value || '';
+  const sort = sortVal.dataset.value || 'default';
+  
   let list = DATA.filter(p => {
     const hay = (p.title+' '+p.cat).toLowerCase();
     if (cat && p.cat!==cat) return false;
-    return !q || hay.includes(q);
+    return !query || hay.includes(query);
   });
+  
   if (sort === 'priceAsc') list.sort((a,b)=>a.price-b.price);
   if (sort === 'priceDesc') list.sort((a,b)=>b.price-a.price);
   if (sort === 'alpha') list.sort((a,b)=>a.title.localeCompare(b.title));
@@ -77,8 +284,12 @@ function applyFilters(){
 
 function dropdown(rootId, items){
   const root = document.getElementById(rootId);
+  if (!root) return;
+  
   const val = root.querySelector('.value');
   const menu = root.querySelector('.menu');
+  if (!val || !menu) return;
+  
   menu.innerHTML = items.map(([key, text])=>`<button data-k="${key}">${text}</button>`).join('');
   menu.addEventListener('click', (e)=>{
     const k = e.target?.dataset?.k; if(!k) return;
@@ -90,24 +301,46 @@ function dropdown(rootId, items){
   });
 }
 
+// ---- Modal Functions ----
 function openModal(id, unlocked=false, sig=null){
   const p = DATA.find(x=>x.id===id); if(!p) return;
-  $('#mTitle').textContent = p.title + (unlocked ? ' — Unlocked' : ' — Preview');
-  $('#mMeta').textContent = `${p.cat} • ${p.model} • ${p.lang} — ${priceLabel(p.price)}`;
+  const mTitle = $('#mTitle');
+  const mMeta = $('#mMeta');
+  const mText = $('#mText');
+  const copyBtn = $('#copyBtn');
+  const txLink = $('#txLink');
+  const modal = $('#modal');
+  
+  if (!mTitle || !mMeta || !mText || !modal) return;
+  
+  mTitle.textContent = p.title + (unlocked ? ' — Unlocked' : ' — Preview');
+  mMeta.textContent = `${p.cat} • ${p.model} • ${p.lang} — ${priceLabel(p.price)}`;
+  
   const owned = localStorage.getItem('pf_owned_'+id)==='1' || unlocked;
-  const brief = $('#uBrief').value.trim();
-  const contact = $('#uContact').value.trim();
-  $('#mText').textContent = owned ? p.full : (brief ? (`Preview with your brief: `+brief.slice(0,160)+'…') : p.preview);
-  $('#copyBtn').classList.toggle('hidden', !owned);
-  const a = $('#txLink'); if (sig) { a.href = 'https://solscan.io/tx/'+sig; a.classList.remove('hidden'); } else a.classList.add('hidden');
-  $('#modal').style.display = 'flex';
-  $('#buyNow').textContent = p.price<=0? 'Get Free' : 'Buy & Unlock';
-  $('#buyNow').onclick = ()=>buyPrompt(id);
+  const brief = $('#uBrief')?.value?.trim() || '';
+  
+  mText.textContent = owned ? p.full : (brief ? (`Preview with your brief: `+brief.slice(0,160)+'…') : p.preview);
+  
+  if (copyBtn) copyBtn.classList.toggle('hidden', !owned);
+  if (txLink) {
+    if (sig) {
+      txLink.href = 'https://solscan.io/tx/'+sig;
+      txLink.classList.remove('hidden');
+    } else {
+      txLink.classList.add('hidden');
+    }
+  }
+  
+  modal.style.display = 'flex';
+  
+  const buyNow = $('#buyNow');
+  if (buyNow) {
+    buyNow.textContent = p.price<=0? 'Get Free' : 'Buy & Unlock';
+    buyNow.onclick = ()=>buyPrompt(id);
+  }
 }
 
-$('#copyBtn').onclick = () => { navigator.clipboard.writeText($('#mText').textContent); toast('Copied'); };
-window.closeModal = () => { $('#modal').style.display = 'none'; };
-
+// ---- Purchase Functions ----
 function savePurchase(id, sig, brief, contact){
   const now = new Date().toISOString();
   const rec = { id, sig, at: now, brief, contact };
@@ -117,10 +350,14 @@ function savePurchase(id, sig, brief, contact){
   localStorage.setItem('pf_owned_'+id, '1');
   renderPurchases();
 }
+
 function renderPurchases(){
   const box = $('#purchasesList');
+  if (!box) return;
+  
   const list = JSON.parse(localStorage.getItem('pf_purchases')||'[]');
   if (!list.length) { box.textContent = 'No purchases yet.'; return; }
+  
   box.innerHTML = list.map(r => {
     const p = DATA.find(x=>x.id===r.id);
     const title = p? p.title : r.id;
@@ -135,37 +372,62 @@ function renderPurchases(){
         </div>
       </div>`;
   }).join('');
+  
   $$('[data-reopen]').forEach(b=>b.addEventListener('click', ()=>openModal(b.getAttribute('data-reopen'), true)));
 }
 
-// Wallet
+// ---- Wallet Functions ----
 async function getProvider(){
   return window.solana ?? window.phantom?.solana ?? null;
 }
+
 async function connectWallet(){
-  provider = await getProvider();
-  if (!provider || !provider.isPhantom) { toast('Phantom not found. Install Phantom.'); return; }
-  const resp = await provider.connect();
-  walletPubkey = resp.publicKey;
-  $('#addr').textContent = 'Wallet: ' + walletPubkey.toBase58().slice(0,4)+'…'+walletPubkey.toBase58().slice(-4);
-  $('#walletBtn').textContent = 'Disconnect Wallet';
-  toast('Wallet connected');
+  try {
+    provider = await getProvider();
+    if (!provider || !provider.isPhantom) { toast('Phantom not found. Install Phantom.'); return; }
+    const resp = await provider.connect();
+    walletPubkey = resp.publicKey;
+    const addr = $('#addr');
+    const walletBtn = $('#walletBtn');
+    if (addr) addr.textContent = 'Wallet: ' + walletPubkey.toBase58().slice(0,4)+'…'+walletPubkey.toBase58().slice(-4);
+    if (walletBtn) walletBtn.textContent = 'Disconnect Wallet';
+    toast('Wallet connected');
+  } catch(e) {
+    console.error('Wallet connection failed:', e);
+    toast('Wallet connection failed');
+  }
 }
+
 async function disconnectWallet(){
-  try { await provider?.disconnect(); } catch(e){}
+  try { 
+    if (provider) await provider.disconnect(); 
+  } catch(e){
+    console.error('Wallet disconnect failed:', e);
+  }
   walletPubkey = null;
-  $('#addr').textContent = 'Wallet: not connected';
-  $('#walletBtn').textContent = 'Connect Wallet';
+  const addr = $('#addr');
+  const walletBtn = $('#walletBtn');
+  if (addr) addr.textContent = 'Wallet: not connected';
+  if (walletBtn) walletBtn.textContent = 'Connect Wallet';
   toast('Wallet disconnected');
 }
-async function toggleWallet(){ if (walletPubkey) return disconnectWallet(); else return connectWallet(); }
 
-// Buy (with FREE support)
+async function toggleWallet(){ 
+  if (walletPubkey) return disconnectWallet(); 
+  else return connectWallet(); 
+}
+
+// ---- Buy Function ----
 async function buyPrompt(id){
   try {
     const p = DATA.find(x=>x.id===id);
     if (!p) return;
-    const brief = $('#uBrief').value.trim(); const contact = $('#uContact').value.trim();
+    
+    const briefEl = $('#uBrief');
+    const contactEl = $('#uContact');
+    const brief = briefEl?.value?.trim() || '';
+    const contact = contactEl?.value?.trim() || '';
+    
     if (brief.length < 3) return toast('Please enter a short brief.');
     if (!contact) return toast('Add your contact (email or Telegram).');
 
@@ -178,6 +440,7 @@ async function buyPrompt(id){
     }
 
     if (!walletPubkey) { await connectWallet(); if(!walletPubkey) return; }
+    
     const amount = p.price;
     toast('Preparing transaction…');
     const lamports = Math.round(amount * solanaWeb3.LAMPORTS_PER_SOL);
@@ -200,24 +463,71 @@ async function buyPrompt(id){
     openModal(id, true, sig);
     toast('Unlocked ✅');
   } catch(e) {
-    console.error(e);
+    console.error('Payment error:', e);
     toast('Payment failed or cancelled');
   }
 }
 
+// ---- Event Handlers ----
+function setupEventHandlers() {
+  // Copy button
+  const copyBtn = $('#copyBtn');
+  if (copyBtn) {
+    copyBtn.onclick = () => { 
+      const mText = $('#mText');
+      if (mText && navigator.clipboard) {
+        navigator.clipboard.writeText(mText.textContent); 
+        toast('Copied'); 
+      }
+    };
+  }
+  
+  // Close modal
+  window.closeModal = () => { 
+    const modal = $('#modal');
+    if (modal) modal.style.display = 'none'; 
+  };
+  
+  // Wallet button
+  const walletBtn = $('#walletBtn');
+  if (walletBtn) walletBtn.onclick = toggleWallet;
+  
+  // Search input
+  const searchInput = $('#q');
+  if (searchInput) searchInput.addEventListener('input', applyFilters);
+  
+  // Hash change for routing
+  window.addEventListener('hashchange', () => {
+    const route = getRoute();
+    showRoute(route);
+  });
+}
+
+// ---- Initialization ----
 window.addEventListener('load', async () => {
-  try { connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'), 'confirmed'); }
-  catch(e){ console.error(e); toast('Failed to init Solana SDK'); }
+  try { 
+    if (window.solanaWeb3) {
+      connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'), 'confirmed'); 
+    }
+  } catch(e){ 
+    console.error('Solana connection failed:', e); 
+    toast('Failed to init Solana SDK'); 
+  }
 
-  // Render
-  renderGrid(DATA); renderPurchases();
-
-  // Dropdowns
+  // Setup dropdowns
   dropdown('cat', [['__all','All'], ['Design','Design'], ['Marketing','Marketing'], ['Crypto','Crypto'], ['Content','Content']]);
   dropdown('sort', [['default','Default'], ['priceAsc','Price ↑'], ['priceDesc','Price ↓'], ['alpha','A → Z']]);
 
-  // Events
-  $('#q').addEventListener('input', applyFilters);
-  $('#walletBtn').onclick = toggleWallet;
-  applyFilters();
+  // Setup event handlers
+  setupEventHandlers();
+  
+  // Initialize dropdown menu
+  initDropdownMenu();
+  
+  // Initialize routing
+  const initialRoute = getRoute();
+  showRoute(initialRoute);
+  
+  // Initial render for purchases
+  renderPurchases();
 });
