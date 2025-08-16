@@ -62,22 +62,34 @@ nav {
   display: inline-block;
   box-sizing: border-box;
   outline: none;
-  font-family: Poppins, Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif; /* Explicitly set for all buttons */
+  font-family: Poppins, Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
 }
 .btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+}
+/* Ensure "Connect Wallet" matches other nav buttons */
+.nav-actions .btn {
+  padding: 12px 18px; /* Match padding of other buttons */
+  border-radius: 14px; /* Match border-radius */
+  background: rgba(255, 255, 255, .05); /* Match background */
+  color: var(--txt); /* Ensure text color matches other buttons */
 }
 .btn.glow {
   background: linear-gradient(90deg, var(--g1), var(--g2));
   color: #0b0d12;
   box-shadow: 0 10px 44px rgba(168, 85, 247, .25);
   border: none;
-  font-family: Poppins, Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif; /* Explicitly set for glow buttons */
+  font-family: Poppins, Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
 }
 .btn.glow:hover {
   transform: translateY(-1px);
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 10px 44px rgba(168, 85, 247, .25);
+}
+/* Update marketplace grey buttons to white text */
+.prompt-card .btn {
+  color: #ffffff; /* White text for better visibility */
+  background: rgba(255, 255, 255, .05); /* Retain grey background */
 }
 .badge {
   font-size: 12px;
@@ -251,7 +263,7 @@ footer {
   border: 0;
   color: var(--txt);
   cursor: pointer;
-  font-family: Poppins, Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif; /* Ensure dropdown buttons match */
+  font-family: Poppins, Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
 }
 .menu button:hover {
   background: rgba(255, 255, 255, .06)
