@@ -1,4 +1,3 @@
-
 // ---- Config ----
 const RECIPIENT = "C8X7hd8xD36kX3Ddh2qf3NNDYaFgQBrjtJVJpU5DHEAr";
 const PRICES = { p0: 0.00, p1: 0.30, p2: 0.12, p3: 0.40, p4: 0.18, p5: 0.22, p6: 0.25 };
@@ -201,19 +200,110 @@ async function buyPrompt(id){
   }
 }
 
+// Router
+const sections = {
+  home: $('#home'),
+  filters: $('#filters'),
+  market: $('#market'),
+  how: $('#how'),
+  creators: $('#creators'),
+  purchases: $('#purchases'),
+  notFound: $('#not-found')
+};
+
+function hideAllSections() {
+  Object.values(sections).forEach(s => s.style.display = 'none');
+}
+
+function routeChange() {
+  const path = location.pathname;
+  hideAllSections();
+  switch (path) {
+    case '/':
+    case '/home':
+      sections.home.style.display = 'block';
+      sections.how.style.display = 'block';
+      break;
+    case '/explore':
+      sections.filters.style.display = 'block';
+      sections.market.style.display = 'block';
+      renderGrid(DATA);
+      applyFilters();
+      break;
+    case '/creators':
+      sections.creators.style.display = 'block';
+      break;
+    case '/purchases':
+      sections.purchases.style.display = 'block';
+      renderPurchases();
+      break;
+    default:
+      sections.notFound.style.display = 'block';
+      break;
+  }
+}
+
+// Intercept internal links for client-side navigation
+$$('.internal-link').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    history.pushState({}, '', link.href);
+    routeChange();
+  });
+});
+
+window.addEventListener('popstate', routeChange);
+
+// Menu accessibility and close logic
+const menu = $('#menu');
+const summary = menu.querySelector('summary');
+
+menu.addEventListener('toggle', () => {
+  summary.setAttribute('aria-expanded', menu.open);
+  if (menu.open) {
+    setTimeout(() => menu.querySelector('.menu a').focus(), 0);
+  }
+});
+
+// Close on outside click
+document.addEventListener('click', (e) => {
+  if (menu.open && !menu.contains(e.target) ) {
+    menu.removeAttribute('open');
+    summary.focus();
+  }
+});
+
+// Close on Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && menu.open) {
+    menu.removeAttribute('open');
+    summary.focus();
+  }
+});
+
+// Intercept menu links and close menu
+$$('.menu a').forEach(a => {
+  a.addEventListener('click', (e) => {
+    e.preventDefault();
+    history.pushState({}, '', a.href);
+    routeChange();
+    menu.removeAttribute('open');
+    summary.focus();
+  });
+});
+
 window.addEventListener('load', async () => {
   try { connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'), 'confirmed'); }
   catch(e){ console.error(e); toast('Failed to init Solana SDK'); }
 
-  // Render
-  renderGrid(DATA); renderPurchases();
-
-  // Dropdowns
+  // Dropdowns for filters (only called when /explore is shown)
   dropdown('cat', [['__all','All'], ['Design','Design'], ['Marketing','Marketing'], ['Crypto','Crypto'], ['Content','Content']]);
   dropdown('sort', [['default','Default'], ['priceAsc','Price ↑'], ['priceDesc','Price ↓'], ['alpha','A → Z']]);
 
   // Events
   $('#q').addEventListener('input', applyFilters);
   $('#walletBtn').onclick = toggleWallet;
-  applyFilters();
+
+  // Initial route
+  routeChange();
 });
