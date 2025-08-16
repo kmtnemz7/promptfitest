@@ -61,6 +61,12 @@ function hideAllSections() {
     const el = $('#' + id);
     if (el) el.style.display = 'none';
   });
+  const heroBg = $('.hero-bg');
+  if (heroBg) heroBg.style.display = 'none';
+  
+  const filters = $('.filters');
+  if (filters) filters.style.display = 'none';
+}
   
   const filters = $('.filters');
   if (filters) filters.style.display = 'none';
