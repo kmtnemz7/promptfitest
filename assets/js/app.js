@@ -58,13 +58,14 @@ function navigateTo(path) {
 function hideAllSections() {
   const sectionsToHide = ['home', 'how', 'market', 'creators', 'purchases'];
   sectionsToHide.forEach(id => {
-    const el = $('#' + id);
+    const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
-  const heroBg = $('.hero-bg');
+
+  const heroBg = document.querySelector('.hero-bg');
   if (heroBg) heroBg.style.display = 'none';
-  
-  const filters = $('.filters');
+
+  const filters = document.querySelector('.filters');
   if (filters) filters.style.display = 'none';
 }
 
