@@ -13,13 +13,17 @@
 <body>
   <nav>
     <div class="container navbar">
-      <a href="#home" class="brand">PromptFi</a>
+      <a href="/" class="brand internal-link">PromptFi</a>
       <div class="nav-actions">
-        <a href="#market" class="btn">Explore</a>
-        <a href="#purchases" class="btn">My Purchases</a>
-        <a href="#creators" class="btn">Creators</a>
-        <a href="#how" class="btn">How</a>
-        <button id="walletBtn" class="btn glow" style="padding: 12px 18px; border-radius: 14px;">Connect Wallet</button>
+        <details id="menu" class="select">
+          <summary class="input trigger" role="button" aria-haspopup="menu" aria-expanded="false">Menu</summary>
+          <div class="menu">
+            <a href="/explore" role="menuitem" class="internal-link">Explore</a>
+            <a href="/purchases" role="menuitem" class="internal-link">My Purchases</a>
+            <a href="/creators" role="menuitem" class="internal-link">Creators</a>
+          </div>
+        </details>
+        <button id="walletBtn" class="btn glow">Connect Wallet</button>
       </div>
     </div>
   </nav>
@@ -33,20 +37,18 @@
           <h1>Turn Your AI Prompts Into Crypto Assets</h1>
           <p class="muted">Buy high-quality prompts with SOL. Unlock instantly after confirmed payment.</p>
           <div style="display:flex;gap:12px;margin-top:16px">
-            <a href="#market" class="btn glow">Explore Prompts</a>
-            <a href="#how" class="btn">How it works</a>
+            <a href="/explore" class="btn glow internal-link">Explore Prompts</a>
+            <a href="/" class="btn internal-link">How it works</a>
           </div>
         </div>
-        <div class="hero-art" aria-hidden="true">
-          <img src="assets/img/hero-art.jpg" alt="Hero artwork for PromptFi" style="width: 100%; height: 100%; object-fit: cover; border-radius: 22px; border: 1px solid var(--b);"> <!-- Added image -->
-        </div>
+        <div class="hero-art" aria-hidden="true"></div>
       </div>
     </div>
   </section>
 
   <div class="toast" id="toast"></div>
 
-  <section class="container filters" style="margin-top:12px;overflow:visible">
+  <section id="filters" class="container filters" style="margin-top:12px;overflow:visible">
     <div class="card card-body" style="overflow:visible">
       <div class="grid" style="grid-template-columns:2fr 1fr 1fr;gap:12px;align-items:end;overflow:visible">
         <label>Search<input id="q" class="input" placeholder="Search title or category"/></label>
@@ -76,7 +78,7 @@
   </section>
 
   <section id="how" class="container" style="padding-bottom:20px">
-    <h2>How it works</h2>
+    <h2>How to Buy</h2>
     <div class="grid grid-3">
       <div class="card card-body"><h3>Connect</h3><p class="muted">Connect Phantom (click again to disconnect).</p></div>
       <div class="card card-body"><h3>Buy</h3><p class="muted">Pay the listed SOL amount to unlock a prompt.</p></div>
@@ -102,13 +104,19 @@
     <div id="purchasesList" class="card card-body">No purchases yet.</div>
   </section>
 
+  <section id="not-found" class="container" style="padding:20px 0; display: none;">
+    <h2>404 - Page Not Found</h2>
+    <p class="muted">The page you are looking for does not exist.</p>
+    <a href="/" class="btn internal-link">Go to Home</a>
+  </section>
+
   <footer>
     <div class="container" style="display:flex;align-items:center;justify-content:space-between">
       <span>© 2025 PromptFi</span>
       <div style="display:flex;gap:12px">
-        <a href="#market">Marketplace</a>
-        <a href="#purchases">My Purchases</a>
-        <a href="#how">How it works</a>
+        <a href="/explore" class="internal-link">Marketplace</a>
+        <a href="/purchases" class="internal-link">My Purchases</a>
+        <a href="/" class="internal-link">How it works</a>
       </div>
     </div>
   </footer>
