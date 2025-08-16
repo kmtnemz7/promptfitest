@@ -12,15 +12,11 @@
 }
 html,
 body {
- margin: 0;
- padding: 0;
- background: var(--bg);
- background-image: 
-   radial-gradient(40% 50% at 15% 20%, rgba(168, 85, 247, .03), transparent 80%),
-   radial-gradient(45% 55% at 85% 25%, rgba(6, 182, 212, .02), transparent 80%),
-   radial-gradient(50% 65% at 50% 75%, rgba(59, 130, 246, .015), transparent 85%);
- color: var(--txt);
- font-family: Poppins, Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--txt);
+  font-family: Poppins, Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
 }
 a {
   color: inherit;
