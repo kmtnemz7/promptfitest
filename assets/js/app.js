@@ -35,13 +35,13 @@ const toast=(m)=>{const t=$('#toast'); t.textContent=m; t.style.display='block';
 const priceLabel=(n)=> (n<=0? 'FREE' : (Math.round(n*100)/100).toFixed(2)+' SOL');
 
 const card=(p)=>`
-  <article class="card prompt-card">
+  <article class="card prompt-card" style="display: flex; flex-direction: column;">
     <div style="height:160px;border-bottom:1px solid var(--b);background:
       radial-gradient(80px 80px at 20% 30%, rgba(168,85,247,.25), transparent 60%),
       radial-gradient(80px 80px at 80% 40%, rgba(6,182,212,.25), transparent 60%);"></div>
-    <div class="card-body">
+    <div class="card-body" style="display: flex; flex-direction: column; flex: 1;">
       <div class="kv"><div><strong>${p.title}</strong><div class="muted">${p.cat} • ${p.model} • ${p.lang}</div></div><span class="badge">${priceLabel(p.price)}</span></div>
-      <p class="muted" style="margin-top:8px;min-height:44px">${p.preview}</p>
+      <p class="muted" style="margin-top:8px;min-height:44px;flex:1">${p.preview}</p>
       <div style="display:flex;gap:8px;margin-top:10px">
         <button class="btn" data-view="${p.id}">Personalize</button>
         <button class="btn glow" data-buy="${p.id}">${p.price<=0?'Get Free':'Buy'}</button>
