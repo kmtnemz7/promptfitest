@@ -2,165 +2,263 @@
 const RECIPIENT = "C8X7hd8xD36kX3Ddh2qf3NNDYaFgQBrjtJVJpU5DHEAr";
 const PRICES = { p0: 0.00, p1: 0.30, p2: 0.12, p3: 0.40, p4: 0.18, p5: 0.22, p6: 0.25 };
 const DATA = [
-  {id:'p0', title:'FREE: Prompt Starter Pack', cat:'Content', model:'Any', lang:'EN', price:PRICES.p0,
-    full:'Starter pack with 5 versatile prompts: 1) Write a concise product description with USP and CTA. 2) Create a tweet thread outline with 3 hook options. 3) Draft a landing page hero line with 3 value props. 4) Produce a YouTube video outline with hook and segment beats. 5) Generate a growth experiment idea with KPI and hypothesis.',
-    preview:'Try PromptFi with a free starter pack of 5 versatile prompts (copy, thread, hero, YT, growth).'},
-  {id:'p1', title:'Pro Graphic Design Prompt', cat:'Design', model:'Midjourney/GPT', lang:'EN', price:PRICES.p1,
-    full:'You are an award-winning brand designer... Create a futuristic, minimal logo brief with constraints, mood, palette, typography, and export specs.',
-    preview:'Create a futuristic, minimal logo brief with constraints, mood, palette...'},
-  {id:'p2', title:'Viral X Thread Prompt', cat:'Marketing', model:'Any', lang:'EN', price:PRICES.p2,
-    full:'Act as a viral ghostwriter... Output a 10-tweet thread with 3 hook variants, pacing, meme moments, and measurable CTA.',
-    preview:'Output a 10-tweet thread with 3 hook variants, pacing, meme moments...'},
-  {id:'p3', title:'DeFi Whitepaper Outline', cat:'Crypto', model:'GPT', lang:'EN', price:PRICES.p3,
-    full:'You are a DeFi strategist... Produce a rigorous whitepaper outline: problem, protocol design, tokenomics, risk, KPIs, and roadmap.',
-    preview:'Produce a rigorous whitepaper outline: problem, design, tokenomics...'},
-  {id:'p4', title:'YouTube Script Prompt', cat:'Content', model:'GPT', lang:'EN', price:PRICES.p4,
-    full:'You are a senior YouTube scriptwriter... Write a 7-minute script with hook, open loop, 3 segments, and strong CTA variations.',
-    preview:'Write a 7-minute script with hook, open loop, 3 segments...'},
-  {id:'p5', title:'Landing Page Copy Prompt', cat:'Marketing', model:'GPT', lang:'EN', price:PRICES.p5,
-    full:'Act as a senior conversion copywriter... Produce hero, value props, and CTA variants with tone sliders and A/B test hooks.',
-    preview:'Produce hero, value props, and CTA variants with tone sliders...'},
-  {id:'p6', title:'Strategy: DeFi Growth Plan', cat:'Crypto', model:'GPT', lang:'EN', price:PRICES.p6,
-    full:'You are a DeFi growth lead... Create a 30-day growth plan with KPIs, channels, experiments, and reporting cadence.',
-    preview:'Create a 30-day growth plan with KPIs, channels, experiments...'}
+  {
+    id: 'p0',
+    title: 'FREE: Prompt Starter Pack',
+    cat: 'Content',
+    model: 'Any',
+    lang: 'EN',
+    price: PRICES.p0,
+    full: 'Starter pack with 5 versatile prompts: 1) Write a concise product description with USP and CTA. 2) Create a tweet thread outline with 3 hook options. 3) Draft a landing page hero line with 3 value props. 4) Produce a YouTube video outline with hook and segment beats. 5) Generate a growth experiment idea with KPI and hypothesis.',
+    preview: 'Try PromptFi with a free starter pack of 5 versatile prompts (copy, thread, hero, YT, growth).'
+  },
+  {
+    id: 'p1',
+    title: 'Pro Graphic Design Prompt',
+    cat: 'Design',
+    model: 'Midjourney/GPT',
+    lang: 'EN',
+    price: PRICES.p1,
+    full: 'You are an award-winning brand designer... Create a futuristic, minimal logo brief with constraints, mood, palette, typography, and export specs.',
+    preview: 'Create a futuristic, minimal logo brief with constraints, mood, palette...'
+  },
+  {
+    id: 'p2',
+    title: 'Viral X Thread Prompt',
+    cat: 'Marketing',
+    model: 'Any',
+    lang: 'EN',
+    price: PRICES.p2,
+    full: 'Act as a viral ghostwriter... Output a 10-tweet thread with 3 hook variants, pacing, meme moments, and measurable CTA.',
+    preview: 'Output a 10-tweet thread with 3 hook variants, pacing, meme moments...'
+  },
+  {
+    id: 'p3',
+    title: 'DeFi Whitepaper Outline',
+    cat: 'Crypto',
+    model: 'GPT',
+    lang: 'EN',
+    price: PRICES.p3,
+    full: 'You are a DeFi strategist... Produce a rigorous whitepaper outline: problem, protocol design, tokenomics, risk, KPIs, and roadmap.',
+    preview: 'Produce a rigorous whitepaper outline: problem, design, tokenomics...'
+  },
+  {
+    id: 'p4',
+    title: 'YouTube Script Prompt',
+    cat: 'Content',
+    model: 'GPT',
+    lang: 'EN',
+    price: PRICES.p4,
+    full: 'You are a senior YouTube scriptwriter... Write a 7-minute script with hook, open loop, 3 segments, and strong CTA variations.',
+    preview: 'Write a 7-minute script with hook, open loop, 3 segments...'
+  },
+  {
+    id: 'p5',
+    title: 'Landing Page Copy Prompt',
+    cat: 'Marketing',
+    model: 'GPT',
+    lang: 'EN',
+    price: PRICES.p5,
+    full: 'Act as a senior conversion copywriter... Produce hero, value props, and CTA variants with tone sliders and A/B test hooks.',
+    preview: 'Produce hero, value props, and CTA variants with tone sliders...'
+  },
+  {
+    id: 'p6',
+    title: 'Strategy: DeFi Growth Plan',
+    cat: 'Crypto',
+    model: 'GPT',
+    lang: 'EN',
+    price: PRICES.p6,
+    full: 'You are a DeFi growth lead... Create a 30-day growth plan with KPIs, channels, experiments, and reporting cadence.',
+    preview: 'Create a 30-day growth plan with KPIs, channels, experiments...'
+  }
 ];
 
 let connection = null;
 let provider = null;
 let walletPubkey = null;
 
-const $ = (s)=>document.querySelector(s);
-const $$ = (s)=>Array.from(document.querySelectorAll(s));
-const toast=(m)=>{const t=$('#toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2400)};
-const priceLabel=(n)=> (n<=0? 'FREE' : (Math.round(n*100)/100).toFixed(2)+' SOL');
+const $ = (s) => document.querySelector(s);
+const $$ = (s) => Array.from(document.querySelectorAll(s));
 
-const card=(p)=>`
+const toast = (m) => {
+  const t = $('#toast');
+  t.textContent = m;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 2400);
+};
+
+const priceLabel = (n) => (n <= 0 ? 'FREE' : (Math.round(n * 100) / 100).toFixed(2) + ' SOL');
+
+const card = (p) =>
   <article class="card prompt-card">
     <div style="height:160px;border-bottom:1px solid var(--b);background:
       radial-gradient(80px 80px at 20% 30%, rgba(168,85,247,.25), transparent 60%),
       radial-gradient(80px 80px at 80% 40%, rgba(6,182,212,.25), transparent 60%);"></div>
     <div class="card-body">
-      <div class="kv"><div><strong>${p.title}</strong><div class="muted">${p.cat} • ${p.model} • ${p.lang}</div></div><span class="badge">${priceLabel(p.price)}</span></div>
+      <div class="kv">
+        <div>
+          <strong>${p.title}</strong>
+          <div class="muted">${p.cat} • ${p.model} • ${p.lang}</div>
+        </div>
+        <span class="badge">${priceLabel(p.price)}</span>
+      </div>
       <p class="muted" style="margin-top:8px;min-height:44px">${p.preview}</p>
       <div style="display:flex;gap:8px;margin-top:10px">
         <button class="btn" data-view="${p.id}">Personalize</button>
-        <button class="btn glow" data-buy="${p.id}">${p.price<=0?'Get Free':'Buy'}</button>
+        <button class="btn glow" data-buy="${p.id}">${p.price <= 0 ? 'Get Free' : 'Buy'}</button>
       </div>
     </div>
-  </article>`;
+  </article>;
 
-function renderGrid(list){
-  const grid = $('#grid'); grid.innerHTML = list.map(card).join('');
-  $$('[data-view]').forEach(b=>b.addEventListener('click', ()=>openModal(b.getAttribute('data-view'))));
-  $$('[data-buy]').forEach(b=>b.addEventListener('click', ()=>buyPrompt(b.getAttribute('data-buy'))));
+function renderGrid(list) {
+  const grid = $('#grid');
+  grid.innerHTML = list.map(card).join('');
+  $$('[data-view]').forEach(b => b.addEventListener('click', () => openModal(b.getAttribute('data-view'))));
+  $$('[data-buy]').forEach(b => b.addEventListener('click', () => buyPrompt(b.getAttribute('data-buy'))));
 }
 
-function applyFilters(){
+function applyFilters() {
   const q = $('#q').value.toLowerCase().trim();
   const cat = $('#cat_val').dataset.value || '';
   const sort = $('#sort_val').dataset.value || 'default';
+
   let list = DATA.filter(p => {
-    const hay = (p.title+' '+p.cat).toLowerCase();
-    if (cat && p.cat!==cat) return false;
+    const hay = (p.title + ' ' + p.cat).toLowerCase();
+    if (cat && p.cat !== cat) return false;
     return !q || hay.includes(q);
   });
-  if (sort === 'priceAsc') list.sort((a,b)=>a.price-b.price);
-  if (sort === 'priceDesc') list.sort((a,b)=>b.price-a.price);
-  if (sort === 'alpha') list.sort((a,b)=>a.title.localeCompare(b.title));
+
+  if (sort === 'priceAsc') list.sort((a, b) => a.price - b.price);
+  if (sort === 'priceDesc') list.sort((a, b) => b.price - a.price);
+  if (sort === 'alpha') list.sort((a, b) => a.title.localeCompare(b.title));
+
   renderGrid(list);
 }
 
-function dropdown(rootId, items){
+function dropdown(rootId, items) {
   const root = document.getElementById(rootId);
   const val = root.querySelector('.value');
   const menu = root.querySelector('.menu');
-  menu.innerHTML = items.map(([key, text])=>`<button data-k="${key}">${text}</button>`).join('');
-  menu.addEventListener('click', (e)=>{
-    const k = e.target?.dataset?.k; if(!k) return;
-    val.dataset.value = k==='__all' ? '' : k;
-    val.textContent = items.find(x=>x[0]===k)?.[1] || items[0][1];
-    menu.style.display='none';
+
+  menu.innerHTML = items.map(([key, text]) => <button data-k="${key}">${text}</button>).join('');
+
+  menu.addEventListener('click', (e) => {
+    const k = e.target?.dataset?.k;
+    if (!k) return;
+    val.dataset.value = k === '__all' ? '' : k;
+    val.textContent = items.find(x => x[0] === k)?.[1] || items[0][1];
+    menu.style.display = 'none';
     root.removeAttribute('open');
     applyFilters();
   });
 }
 
-function openModal(id, unlocked=false, sig=null){
-  const p = DATA.find(x=>x.id===id); if(!p) return;
+function openModal(id, unlocked = false, sig = null) {
+  const p = DATA.find(x => x.id === id);
+  if (!p) return;
+
   $('#mTitle').textContent = p.title + (unlocked ? ' — Unlocked' : ' — Preview');
-  $('#mMeta').textContent = `${p.cat} • ${p.model} • ${p.lang} — ${priceLabel(p.price)}`;
-  const owned = localStorage.getItem('pf_owned_'+id)==='1' || unlocked;
+  $('#mMeta').textContent = ${p.cat} • ${p.model} • ${p.lang} — ${priceLabel(p.price)};
+
+  const owned = localStorage.getItem('pf_owned_' + id) === '1' || unlocked;
   const brief = $('#uBrief').value.trim();
   const contact = $('#uContact').value.trim();
-  $('#mText').textContent = owned ? p.full : (brief ? (`Preview with your brief: `+brief.slice(0,160)+'…') : p.preview);
+
+  $('#mText').textContent = owned ? p.full : (brief ? (Preview with your brief: +brief.slice(0,160)+'…') : p.preview);
   $('#copyBtn').classList.toggle('hidden', !owned);
-  const a = $('#txLink'); if (sig) { a.href = 'https://solscan.io/tx/'+sig; a.classList.remove('hidden'); } else a.classList.add('hidden');
+
+  const a = $('#txLink');
+  if (sig) {
+    a.href = 'https://solscan.io/tx/' + sig;
+    a.classList.remove('hidden');
+  } else a.classList.add('hidden');
+
   $('#modal').style.display = 'flex';
-  $('#buyNow').textContent = p.price<=0? 'Get Free' : 'Buy & Unlock';
-  $('#buyNow').onclick = ()=>buyPrompt(id);
+  $('#buyNow').textContent = p.price <= 0 ? 'Get Free' : 'Buy & Unlock';
+  $('#buyNow').onclick = () => buyPrompt(id);
 }
 
-$('#copyBtn').onclick = () => { navigator.clipboard.writeText($('#mText').textContent); toast('Copied'); };
+$('#copyBtn').onclick = () => {
+  navigator.clipboard.writeText($('#mText').textContent);
+  toast('Copied');
+};
+
 window.closeModal = () => { $('#modal').style.display = 'none'; };
 
-function savePurchase(id, sig, brief, contact){
+function savePurchase(id, sig, brief, contact) {
   const now = new Date().toISOString();
   const rec = { id, sig, at: now, brief, contact };
-  const list = JSON.parse(localStorage.getItem('pf_purchases')||'[]');
+  const list = JSON.parse(localStorage.getItem('pf_purchases') || '[]');
   list.unshift(rec);
   localStorage.setItem('pf_purchases', JSON.stringify(list));
-  localStorage.setItem('pf_owned_'+id, '1');
+  localStorage.setItem('pf_owned_' + id, '1');
   renderPurchases();
 }
-function renderPurchases(){
+
+function renderPurchases() {
   const box = $('#purchasesList');
-  const list = JSON.parse(localStorage.getItem('pf_purchases')||'[]');
+  const list = JSON.parse(localStorage.getItem('pf_purchases') || '[]');
+
   if (!list.length) { box.textContent = 'No purchases yet.'; return; }
+
   box.innerHTML = list.map(r => {
-    const p = DATA.find(x=>x.id===r.id);
-    const title = p? p.title : r.id;
-    const linkA = r.sig && r.sig!=='FREE' ? `<a class="underline" href="https://solscan.io/tx/${r.sig}" target="_blank">Solscan</a>` : '<span class="muted">Free</span>';
-    const brief = r.brief ? `<div class="muted" style="margin-top:4px">Brief: ${r.brief.slice(0,140)}</div>` : '';
-    const contact = r.contact ? `<div class="muted">Contact: ${r.contact}</div>` : '';
-    return `<div class="kv" style="padding:12px 0;border-bottom:1px solid var(--b)">
-        <div><div><strong>${title}</strong></div>
-        <div class="muted">${new Date(r.at).toLocaleString()}</div>${brief}${contact}</div>
-        <div style="display:flex;gap:8px">
-          ${linkA}<button class="btn" data-reopen="${r.id}">View</button>
-        </div>
-      </div>`;
+    const p = DATA.find(x => x.id === r.id);
+    const title = p ? p.title : r.id;
+    const linkA = r.sig && r.sig !== 'FREE'
+      ? <a class="underline" href="https://solscan.io/tx/${r.sig}" target="_blank">Solscan</a>
+      : '<span class="muted">Free</span>';
+    const brief = r.brief ? <div class="muted" style="margin-top:4px">Brief: ${r.brief.slice(0,140)}</div> : '';
+    const contact = r.contact ? <div class="muted">Contact: ${r.contact}</div> : '';
+
+    return <div class="kv" style="padding:12px 0;border-bottom:1px solid var(--b)">
+      <div>
+        <div><strong>${title}</strong></div>
+        <div class="muted">${new Date(r.at).toLocaleString()}</div>${brief}${contact}
+      </div>
+      <div style="display:flex;gap:8px">
+        ${linkA}<button class="btn" data-reopen="${r.id}">View</button>
+      </div>
+    </div>;
   }).join('');
-  $$('[data-reopen]').forEach(b=>b.addEventListener('click', ()=>openModal(b.getAttribute('data-reopen'), true)));
+
+  $$('[data-reopen]').forEach(b => b.addEventListener('click', () => openModal(b.getAttribute('data-reopen'), true)));
 }
 
 // Wallet
-async function getProvider(){
+async function getProvider() {
   return window.solana ?? window.phantom?.solana ?? null;
 }
-async function connectWallet(){
+
+async function connectWallet() {
   provider = await getProvider();
   if (!provider || !provider.isPhantom) { toast('Phantom not found. Install Phantom.'); return; }
   const resp = await provider.connect();
   walletPubkey = resp.publicKey;
-  $('#addr').textContent = 'Wallet: ' + walletPubkey.toBase58().slice(0,4)+'…'+walletPubkey.toBase58().slice(-4);
+  $('#addr').textContent = 'Wallet: ' + walletPubkey.toBase58().slice(0, 4) + '…' + walletPubkey.toBase58().slice(-4);
   $('#walletBtn').textContent = 'Disconnect Wallet';
   toast('Wallet connected');
 }
-async function disconnectWallet(){
-  try { await provider?.disconnect(); } catch(e){}
+
+async function disconnectWallet() {
+  try { await provider?.disconnect(); } catch (e) {}
   walletPubkey = null;
   $('#addr').textContent = 'Wallet: not connected';
   $('#walletBtn').textContent = 'Connect Wallet';
   toast('Wallet disconnected');
 }
-async function toggleWallet(){ if (walletPubkey) return disconnectWallet(); else return connectWallet(); }
+
+async function toggleWallet() { if (walletPubkey) return disconnectWallet(); else return connectWallet(); }
 
 // Buy (with FREE support)
-async function buyPrompt(id){
+async function buyPrompt(id) {
   try {
-    const p = DATA.find(x=>x.id===id);
+    const p = DATA.find(x => x.id === id);
     if (!p) return;
-    const brief = $('#uBrief').value.trim(); const contact = $('#uContact').value.trim();
+
+    const brief = $('#uBrief').value.trim();
+    const contact = $('#uContact').value.trim();
+
     if (brief.length < 3) return toast('Please enter a short brief.');
     if (!contact) return toast('Add your contact (email or Telegram).');
 
@@ -168,13 +266,15 @@ async function buyPrompt(id){
     if (p.price <= 0) {
       savePurchase(id, 'FREE', brief, contact);
       openModal(id, true, null);
-      toast('Unlocked (free) ✅');
+      toast('Unlocked (free) ');
       return;
     }
 
-    if (!walletPubkey) { await connectWallet(); if(!walletPubkey) return; }
+    if (!walletPubkey) { await connectWallet(); if (!walletPubkey) return; }
+
     const amount = p.price;
     toast('Preparing transaction…');
+
     const lamports = Math.round(amount * solanaWeb3.LAMPORTS_PER_SOL);
     const tx = new solanaWeb3.Transaction().add(
       solanaWeb3.SystemProgram.transfer({
@@ -183,127 +283,43 @@ async function buyPrompt(id){
         lamports
       })
     );
+
     tx.feePayer = walletPubkey;
+
     const latest = await connection.getLatestBlockhash('finalized');
     tx.recentBlockhash = latest.blockhash;
+
     toast('Waiting for signature…');
     const signed = await provider.signTransaction(tx);
+
     const sig = await connection.sendRawTransaction(signed.serialize());
+
     toast('Confirming (finalized)…');
     await connection.confirmTransaction({ signature: sig }, 'finalized');
+
     savePurchase(id, sig, brief, contact);
     openModal(id, true, sig);
-    toast('Unlocked ✅');
-  } catch(e) {
+    toast('Unlocked ');
+  } catch (e) {
     console.error(e);
     toast('Payment failed or cancelled');
   }
 }
 
-// Router
-const sections = {
-  home: $('#home'),
-  filters: $('#filters'),
-  market: $('#market'),
-  how: $('#how'),
-  creators: $('#creators'),
-  purchases: $('#purchases'),
-  notFound: $('#not-found')
-};
-
-function hideAllSections() {
-  Object.values(sections).forEach(s => s.style.display = 'none');
-}
-
-function routeChange() {
-  const path = location.pathname;
-  hideAllSections();
-  switch (path) {
-    case '/':
-    case '/home':
-      sections.home.style.display = 'block';
-      sections.how.style.display = 'block';
-      break;
-    case '/explore':
-      sections.filters.style.display = 'block';
-      sections.market.style.display = 'block';
-      renderGrid(DATA);
-      applyFilters();
-      break;
-    case '/creators':
-      sections.creators.style.display = 'block';
-      break;
-    case '/purchases':
-      sections.purchases.style.display = 'block';
-      renderPurchases();
-      break;
-    default:
-      sections.notFound.style.display = 'block';
-      break;
-  }
-}
-
-// Intercept internal links for client-side navigation
-$$('.internal-link').forEach(link => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    history.pushState({}, '', link.href);
-    routeChange();
-  });
-});
-
-window.addEventListener('popstate', routeChange);
-
-// Menu accessibility and close logic
-const menu = $('#menu');
-const summary = menu.querySelector('summary');
-
-menu.addEventListener('toggle', () => {
-  summary.setAttribute('aria-expanded', menu.open);
-  if (menu.open) {
-    setTimeout(() => menu.querySelector('.menu a').focus(), 0);
-  }
-});
-
-// Close on outside click
-document.addEventListener('click', (e) => {
-  if (menu.open && !menu.contains(e.target) ) {
-    menu.removeAttribute('open');
-    summary.focus();
-  }
-});
-
-// Close on Escape
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && menu.open) {
-    menu.removeAttribute('open');
-    summary.focus();
-  }
-});
-
-// Intercept menu links and close menu
-$$('.menu a').forEach(a => {
-  a.addEventListener('click', (e) => {
-    e.preventDefault();
-    history.pushState({}, '', a.href);
-    routeChange();
-    menu.removeAttribute('open');
-    summary.focus();
-  });
-});
-
 window.addEventListener('load', async () => {
   try { connection = new solanaWeb3.Connection(solanaWeb3.clusterApiUrl('mainnet-beta'), 'confirmed'); }
-  catch(e){ console.error(e); toast('Failed to init Solana SDK'); }
+  catch (e) { console.error(e); toast('Failed to init Solana SDK'); }
 
-  // Dropdowns for filters (only called when /explore is shown)
-  dropdown('cat', [['__all','All'], ['Design','Design'], ['Marketing','Marketing'], ['Crypto','Crypto'], ['Content','Content']]);
-  dropdown('sort', [['default','Default'], ['priceAsc','Price ↑'], ['priceDesc','Price ↓'], ['alpha','A → Z']]);
+  // Render
+  renderGrid(DATA);
+  renderPurchases();
+
+  // Dropdowns
+  dropdown('cat', [['__all', 'All'], ['Design', 'Design'], ['Marketing', 'Marketing'], ['Crypto', 'Crypto'], ['Content', 'Content']]);
+  dropdown('sort', [['default', 'Default'], ['priceAsc', 'Price ↑'], ['priceDesc', 'Price ↓'], ['alpha', 'A → Z']]);
 
   // Events
   $('#q').addEventListener('input', applyFilters);
   $('#walletBtn').onclick = toggleWallet;
-
-  // Initial route
-  routeChange();
+  applyFilters();
 });
