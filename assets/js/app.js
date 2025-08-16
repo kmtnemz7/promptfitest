@@ -1,4 +1,3 @@
-
 // ---- Config ----
 const RECIPIENT = "C8X7hd8xD36kX3Ddh2qf3NNDYaFgQBrjtJVJpU5DHEAr";
 const PRICES = { p0: 0.00, p1: 0.30, p2: 0.12, p3: 0.40, p4: 0.18, p5: 0.22, p6: 0.25 };
@@ -51,7 +50,12 @@ const card=(p)=>`
   </article>`;
 
 function renderGrid(list){
-  const grid = $('#grid'); grid.innerHTML = list.map(card).join('');
+  const grid = $('#grid'); 
+  // Hide skeleton when rendering actual content
+  const skeleton = $('#skeleton');
+  if (skeleton) skeleton.style.display = 'none';
+  
+  grid.innerHTML = list.map(card).join('');
   $$('[data-view]').forEach(b=>b.addEventListener('click', ()=>openModal(b.getAttribute('data-view'))));
   $$('[data-buy]').forEach(b=>b.addEventListener('click', ()=>buyPrompt(b.getAttribute('data-buy'))));
 }
