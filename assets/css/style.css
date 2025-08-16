@@ -101,8 +101,16 @@ nav {
   color: #ffffff;
   background: rgba(255, 255, 255, .05);
 }
+/* Restore unique color scheme for marketplace glow buttons */
 #grid .prompt-card .btn.glow {
-  color: #0b0d12; /* Retain dark text for glow buttons */
+  background: linear-gradient(90deg, var(--g1), var(--g2));
+  color: #0b0d12;
+  border: none;
+  box-shadow: 0 10px 44px rgba(168, 85, 247, .25);
+}
+#grid .prompt-card .btn.glow:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 10px 44px rgba(168, 85, 247, .25);
 }
 .badge {
   font-size: 12px;
