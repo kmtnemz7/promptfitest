@@ -558,3 +558,37 @@ window.addEventListener('load', async () => {
   
   renderPurchases();
 });
+// --- Page loader (3s on first load and route changes) ---
+(function () {
+  const loader = document.getElementById('pageLoader');
+  if (!loader) return;
+
+  function hideLoader(){ loader.classList.add('is-hidden'); }
+  function showLoader(ms=3000){
+    loader.classList.remove('is-hidden');
+    return new Promise(res => setTimeout(() => { hideLoader(); res(); }, ms));
+  }
+
+  // Initial load: keep visible, then hide after 3s
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(hideLoader, 3000));
+  } else {
+    setTimeout(hideLoader, 3000);
+  }
+
+  // Show loader when navigating via internal links (class="internal-link")
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a.internal-link');
+    if (!a) return;
+    const href = a.getAttribute('href') || '';
+    // Only delay for real page switches (paths), not hash jumps
+    if (href && href.startsWith('/')) {
+      e.preventDefault();
+      showLoader(3000).then(() => { window.location.href = href; });
+    }
+  });
+
+  // Expose for manual use if you add a client router later
+  window.PFLoader = { show: showLoader, hide: hideLoader };
+})();
+
