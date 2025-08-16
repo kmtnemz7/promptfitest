@@ -578,16 +578,33 @@ window.addEventListener('load', async () => {
   }
 
   // Show loader when navigating via internal links (class="internal-link")
-  document.addEventListener('click', (e) => {
-    const a = e.target.closest('a.internal-link');
-    if (!a) return;
-    const href = a.getAttribute('href') || '';
-    // Only delay for real page switches (paths), not hash jumps
-    if (href && href.startsWith('/')) {
-      e.preventDefault();
-      showLoader(1650).then(() => { window.location.href = href; });
-    }
-  });
+// Handle internal links: paths AND hashes (/#explore, #how, etc.)
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('a');
+  if (!a) return;
+
+  const href = a.getAttribute('href') || '';
+
+  // same-page hash (e.g. "#explore") or root+# ("/#explore")
+  if (href.startsWith('#') || href.startsWith('/#')) {
+    e.preventDefault();
+    const hash = href.startsWith('/#') ? href.slice(1) : href; // normalize to "#id"
+    showLoader(LOAD_MS).then(() => {
+      // update the URL hash without reloading
+      history.pushState(null, '', hash);
+      // optional: jump to target after loader hides
+      const el = document.querySelector(hash);
+      if (el) el.scrollIntoView({ behavior: 'instant', block: 'start' });
+    });
+    return;
+  }
+
+  // same-origin path navigation (e.g. "/explore")
+  if (href.startsWith('/')) {
+    e.preventDefault();
+    showLoader(LOAD_MS).then(() => { window.location.href = href; });
+  }
+});
 
   // Expose for manual use if you add a client router later
   window.PFLoader = { show: showLoader, hide: hideLoader };
