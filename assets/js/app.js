@@ -38,15 +38,16 @@ const priceLabel=(n)=> (n<=0? 'FREE' : (Math.round(n*100)/100).toFixed(2)+' SOL'
 // ---- Router ----
 const routes = {
   '': 'home',
+  'home': 'home',
   'explore': 'explore', 
   'creators': 'creators',
   'purchases': 'purchases'
 };
 
 function getRoute() {
-  const hash = window.location.hash.slice(1);
+  const hash = window.location.hash.slice(1) || '';
   const route = hash.split('/')[0];
-  return routes[route] || '404';
+  return routes[route] || routes[''];
 }
 
 function navigateTo(path) {
@@ -55,27 +56,23 @@ function navigateTo(path) {
 }
 
 function hideAllSections() {
-  const sections = ['home', 'explore', 'creators', 'purchases', 'market', 'how', '404'];
-  sections.forEach(id => {
-    const el = $(`#${id}`) || $(`[data-page="${id}"]`);
+  // Hide all main sections except nav and footer
+  const sectionsToHide = ['home', 'how', 'market', 'creators', 'purchases'];
+  sectionsToHide.forEach(id => {
+    const el = $('#' + id);
     if (el) el.style.display = 'none';
   });
   
-  // Hide sections that exist in markup
-  const existingSections = $$('section');
-  existingSections.forEach(section => {
-    if (section.id && section.id !== 'home') {
-      section.style.display = 'none';
-    }
-  });
+  // Also hide filters
+  const filters = $('.filters');
+  if (filters) filters.style.display = 'none';
 }
 
 function showRoute(route) {
   hideAllSections();
   currentRoute = route;
   
-  const container = $('#main-content');
-  if (!container) return;
+  console.log('Showing route:', route); // Debug log
   
   switch(route) {
     case 'home':
@@ -90,25 +87,40 @@ function showRoute(route) {
     case 'purchases':
       showPurchases();
       break;
-    case '404':
-      show404();
+    default:
+      showHome(); // Default to home
       break;
   }
 }
 
 function showHome() {
+  console.log('Showing home'); // Debug log
   const heroSection = $('#home');
   const howSection = $('#how');
-  if (heroSection) heroSection.style.display = 'block';
-  if (howSection) howSection.style.display = 'block';
+  if (heroSection) {
+    heroSection.style.display = 'block';
+    console.log('Hero section shown');
+  }
+  if (howSection) {
+    howSection.style.display = 'block';
+    console.log('How section shown');
+  }
 }
 
 function showExplore() {
+  console.log('Showing explore'); // Debug log
   // Show filters and marketplace
   const filtersSection = $('.filters');
   const marketSection = $('#market');
-  if (filtersSection) filtersSection.style.display = 'block';
-  if (marketSection) marketSection.style.display = 'block';
+  
+  if (filtersSection) {
+    filtersSection.style.display = 'block';
+    console.log('Filters shown');
+  }
+  if (marketSection) {
+    marketSection.style.display = 'block';
+    console.log('Market shown');
+  }
   
   // Ensure grid is rendered
   renderGrid(DATA);
@@ -116,33 +128,22 @@ function showExplore() {
 }
 
 function showCreators() {
+  console.log('Showing creators'); // Debug log
   const creatorsSection = $('#creators');
-  if (creatorsSection) creatorsSection.style.display = 'block';
+  if (creatorsSection) {
+    creatorsSection.style.display = 'block';
+    console.log('Creators section shown');
+  }
 }
 
 function showPurchases() {
+  console.log('Showing purchases'); // Debug log
   const purchasesSection = $('#purchases');
-  if (purchasesSection) purchasesSection.style.display = 'block';
-  renderPurchases();
-}
-
-function show404() {
-  let notFoundSection = $('#not-found');
-  if (!notFoundSection) {
-    // Create 404 section dynamically
-    const container = document.body;
-    notFoundSection = document.createElement('section');
-    notFoundSection.id = 'not-found';
-    notFoundSection.className = 'container';
-    notFoundSection.style.cssText = 'padding: 80px 0; text-align: center;';
-    notFoundSection.innerHTML = `
-      <h1 style="font-size: 48px; margin-bottom: 16px;">404</h1>
-      <p class="muted" style="font-size: 18px; margin-bottom: 24px;">Page not found</p>
-      <a href="#" class="btn glow">Return Home</a>
-    `;
-    container.appendChild(notFoundSection);
+  if (purchasesSection) {
+    purchasesSection.style.display = 'block';
+    console.log('Purchases section shown');
   }
-  notFoundSection.style.display = 'block';
+  renderPurchases();
 }
 
 // ---- Dropdown Menu ----
@@ -181,9 +182,14 @@ function initDropdownMenu() {
     else openMenu();
   });
   
-  // Menu item clicks
+  // Menu item clicks - handle navigation
   menuDropdown.addEventListener('click', (e) => {
     if (e.target.tagName === 'A') {
+      e.preventDefault();
+      const href = e.target.getAttribute('href');
+      if (href && href.startsWith('#')) {
+        navigateTo(href.slice(1));
+      }
       closeMenu();
     }
   });
@@ -496,6 +502,15 @@ function setupEventHandlers() {
   const searchInput = $('#q');
   if (searchInput) searchInput.addEventListener('input', applyFilters);
   
+  // Handle navigation clicks
+  document.addEventListener('click', (e) => {
+    if (e.target.tagName === 'A' && e.target.getAttribute('href')?.startsWith('#')) {
+      e.preventDefault();
+      const href = e.target.getAttribute('href').slice(1);
+      navigateTo(href);
+    }
+  });
+  
   // Hash change for routing
   window.addEventListener('hashchange', () => {
     const route = getRoute();
@@ -526,6 +541,7 @@ window.addEventListener('load', async () => {
   
   // Initialize routing
   const initialRoute = getRoute();
+  console.log('Initial route:', initialRoute); // Debug log
   showRoute(initialRoute);
   
   // Initial render for purchases
