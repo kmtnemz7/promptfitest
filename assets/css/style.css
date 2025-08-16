@@ -512,3 +512,27 @@ footer {
     min-width: 140px;
   }
 }
+/* — Page Loader — */
+.page-loader{
+  position:fixed; inset:0; z-index:3000;
+  display:flex; align-items:center; justify-content:center;
+  background:
+    radial-gradient(50% 60% at 20% 20%, rgba(168,85,247,.10), transparent 60%),
+    radial-gradient(50% 60% at 80% 30%, rgba(6,182,212,.08), transparent 60%),
+    rgba(0,0,0,.65);
+  backdrop-filter: blur(8px);
+  transition: opacity .4s ease, visibility .4s ease;
+  opacity:1; visibility:visible;
+}
+.page-loader.is-hidden{ opacity:0; visibility:hidden; pointer-events:none; }
+
+.spinner{
+  width:60px; height:60px; border-radius:50%;
+  border:3px solid rgba(255,255,255,.15);
+  border-top-color: var(--g1);
+  border-right-color: var(--g2);
+  border-bottom-color: var(--g3);
+  animation: pf-spin 1s linear infinite;
+}
+@keyframes pf-spin { to { transform: rotate(360deg); } }
+
