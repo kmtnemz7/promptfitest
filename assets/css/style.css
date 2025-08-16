@@ -91,11 +91,6 @@ nav {
   transition: transform .2s, box-shadow .2s;
 }
 
-.roadmap-phase:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(168, 85, 247, .15);
-}
-
 .roadmap-phase::before {
   content: '';
   position: absolute;
