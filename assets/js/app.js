@@ -559,7 +559,7 @@ window.addEventListener('load', async () => {
   renderPurchases();
 });
 // --- Page loader (3s on first load and route changes) ---
-(// --- Page loader (duration control) ---
+// --- Page loader (duration control) ---
 (function () {
   const loader = document.getElementById('pageLoader');
   if (!loader) return;
