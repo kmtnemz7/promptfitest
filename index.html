@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>PromptFi — Decentralized Prompt Marketplace</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"> <!-- Added Poppins font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/style.css"/>
 <link rel="manifest" href="manifest.json"/>
 <link rel="icon" href="assets/img/favicon.png" type="image/png"/>
@@ -19,7 +19,7 @@
         <a href="#purchases" class="btn">My Purchases</a>
         <a href="#creators" class="btn">Creators</a>
         <a href="#how" class="btn">How</a>
-        <button id="walletBtn" class="btn glow">Connect Wallet</button>
+        <button id="walletBtn" class="btn glow" style="padding: 12px 18px; border-radius: 14px;">Connect Wallet</button> <!-- Explicitly set base styling -->
       </div>
     </div>
   </nav>
@@ -70,7 +70,7 @@
     <div id="skeleton" class="grid grid-3">
       <div class="skel"></div><div class="skel"></div><div class="skel"></div>
     </div>
-    <div id="grid" class="grid grid-3" style="margin-top:12px"></div>
+    <div id="grid" class="grid grid-3" style="margin-top:12px"></div> <!-- Marketplace buttons are dynamically added here by app.js -->
   </section>
 
   <section id="how" class="container" style="padding-bottom:20px">
