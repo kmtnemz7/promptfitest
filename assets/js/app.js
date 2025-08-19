@@ -32,7 +32,7 @@ let currentRoute = '';
 
 const $ = (s)=>document.querySelector(s);
 const $$ = (s)=>Array.from(document.querySelectorAll(s));
-const toast=(m)=>{const t=$('#toast'); t.textContent=m; t.style.display='block'; setTimeout(()=>t.style.display='none',2400)};
+const toast=(m)=>{const t=$('#toast'); t.textContent=m; t.setAttribute('role', 'alert'); t.style.display='block'; setTimeout(()=>t.classList.add('active'), 10); setTimeout(()=>{t.classList.remove('active'); setTimeout(()=>t.style.display='none', 300);}, 1800);};
 const priceLabel=(n)=> (n<=0? 'FREE' : (Math.round(n*100)/100).toFixed(2)+' SOL');
 
 // ---- Router ----
@@ -134,7 +134,7 @@ function initDropdownMenu() {
     if (isOpen) return;
     isOpen = true;
     menuDropdown.style.display = 'block';
-    setTimeout(() => menuDropdown.classList.add('active'), 10); // Trigger animation
+    setTimeout(() => menuDropdown.classList.add('active'), 10);
     menuTrigger.setAttribute('aria-expanded', 'true');
     
     const firstItem = menuDropdown.querySelector('a');
@@ -145,7 +145,7 @@ function initDropdownMenu() {
     if (!isOpen) return;
     isOpen = false;
     menuDropdown.classList.remove('active');
-    setTimeout(() => menuDropdown.style.display = 'none', 300); // Match transition duration
+    setTimeout(() => menuDropdown.style.display = 'none', 300);
     menuTrigger.setAttribute('aria-expanded', 'false');
     menuTrigger.focus();
   }
@@ -202,75 +202,6 @@ function initDropdownMenu() {
         } else if (!e.shiftKey && currentIndex === items.length - 1) {
           closeMenu();
         }
-        break;
-    }
-  });
-}
-
-function dropdown(rootId, items){
-  const root = document.getElementById(rootId);
-  if (!root) return;
-  
-  const summary = root.querySelector('summary');
-  const val = root.querySelector('.value');
-  const menu = root.querySelector('.menu');
-  if (!val || !menu || !summary) return;
-  
-  menu.innerHTML = items.map(([key, text])=>`<button data-k="${key}">${text}</button>`).join('');
-  
-  summary.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (root.hasAttribute('open')) {
-      root.removeAttribute('open');
-    } else {
-      root.setAttribute('open', '');
-    }
-  });
-  
-  menu.addEventListener('click', (e) => {
-    const k = e.target?.dataset?.k;
-    if (!k) return;
-    
-    val.dataset.value = k === '__all' ? '' : k;
-    val.textContent = items.find(x => x[0] === k)?.[1] || items[0][1];
-    
-    root.removeAttribute('open');
-    
-    applyFilters();
-  });
-  
-  document.addEventListener('click', (e) => {
-    if (!root.contains(e.target)) {
-      root.removeAttribute('open');
-    }
-  });
-  
-  root.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      root.removeAttribute('open');
-      summary.focus();
-    }
-  });
-  
-  menu.addEventListener('keydown', (e) => {
-    const buttons = Array.from(menu.querySelectorAll('button'));
-    const currentIndex = buttons.indexOf(e.target);
-    
-    switch(e.key) {
-      case 'ArrowDown':
-        e.preventDefault();
-        const nextIndex = currentIndex < buttons.length - 1 ? currentIndex + 1 : 0;
-        buttons[nextIndex].focus();
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        const prevIndex = currentIndex > 0 ? currentIndex - 1 : buttons.length - 1;
-        buttons[prevIndex].focus();
-        break;
-      case 'Enter':
-      case ' ':
-        e.preventDefault();
-        e.target.click();
         break;
     }
   });
@@ -337,10 +268,8 @@ function dropdown(rootId, items){
   const menu = root.querySelector('.menu');
   if (!val || !menu || !summary) return;
   
-  // Populate menu items
   menu.innerHTML = items.map(([key, text])=>`<button data-k="${key}">${text}</button>`).join('');
   
-  // Handle summary click to toggle dropdown
   summary.addEventListener('click', (e) => {
     e.preventDefault();
     if (root.hasAttribute('open')) {
@@ -350,30 +279,24 @@ function dropdown(rootId, items){
     }
   });
   
-  // Handle menu item selection
   menu.addEventListener('click', (e) => {
     const k = e.target?.dataset?.k;
     if (!k) return;
     
-    // Update the selected value
     val.dataset.value = k === '__all' ? '' : k;
     val.textContent = items.find(x => x[0] === k)?.[1] || items[0][1];
     
-    // Close the dropdown
     root.removeAttribute('open');
     
-    // Apply filters
     applyFilters();
   });
   
-  // Close dropdown when clicking outside
   document.addEventListener('click', (e) => {
     if (!root.contains(e.target)) {
       root.removeAttribute('open');
     }
   });
   
-  // Handle keyboard navigation
   root.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       root.removeAttribute('open');
@@ -381,7 +304,6 @@ function dropdown(rootId, items){
     }
   });
   
-  // Handle keyboard navigation within menu
   menu.addEventListener('keydown', (e) => {
     const buttons = Array.from(menu.querySelectorAll('button'));
     const currentIndex = buttons.indexOf(e.target);
@@ -437,7 +359,7 @@ function openModal(id, unlocked=false, sig=null){
   }
   
   modal.style.display = 'flex';
-  setTimeout(() => modal.classList.add('active'), 10); // Trigger animation after display
+  setTimeout(() => modal.classList.add('active'), 10);
   
   const buyNow = $('#buyNow');
   if (buyNow) {
@@ -450,7 +372,7 @@ window.closeModal = () => {
   const modal = $('#modal');
   if (modal) {
     modal.classList.remove('active');
-    setTimeout(() => modal.style.display = 'none', 400); // Match transition duration
+    setTimeout(() => modal.style.display = 'none', 400);
   }
 };
 
@@ -596,7 +518,10 @@ function setupEventHandlers() {
   
   window.closeModal = () => { 
     const modal = $('#modal');
-    if (modal) modal.style.display = 'none'; 
+    if (modal) {
+      modal.classList.remove('active');
+      setTimeout(() => modal.style.display = 'none', 400);
+    }
   };
   
   const walletBtn = $('#walletBtn');
@@ -641,55 +566,46 @@ window.addEventListener('load', async () => {
   
   renderPurchases();
 });
-// --- Page loader (3s on first load and route changes) ---
-// --- Page loader (duration control) ---
+
+// ---- Page Loader ----
 (function () {
   const loader = document.getElementById('pageLoader');
   if (!loader) return;
 
   function hideLoader(){ loader.classList.add('is-hidden'); }
-  function showLoader(ms = 800) {
+  function showLoader(ms=800){
     loader.classList.remove('is-hidden');
     return new Promise(res => setTimeout(() => { hideLoader(); res(); }, ms));
   }
 
-  // Initial load: keep visible, then hide after 3s
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => setTimeout(hideLoader, 1650));
+    document.addEventListener('DOMContentLoaded', () => setTimeout(hideLoader, 800));
   } else {
-    setTimeout(hideLoader, 1650);
+    setTimeout(hideLoader, 800);
   }
 
-  // Show loader when navigating via internal links (class="internal-link")
-// Handle internal links: paths AND hashes (/#explore, #how, etc.)
-document.addEventListener('click', (e) => {
-  const a = e.target.closest('a');
-  if (!a) return;
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a');
+    if (!a) return;
 
-  const href = a.getAttribute('href') || '';
+    const href = a.getAttribute('href') || '';
 
-  // same-page hash (e.g. "#explore") or root+# ("/#explore")
-  if (href.startsWith('#') || href.startsWith('/#')) {
-    e.preventDefault();
-    const hash = href.startsWith('/#') ? href.slice(1) : href; // normalize to "#id"
-    showLoader(LOAD_MS).then(() => {
-      // update the URL hash without reloading
-      history.pushState(null, '', hash);
-      // optional: jump to target after loader hides
-      const el = document.querySelector(hash);
-      if (el) el.scrollIntoView({ behavior: 'instant', block: 'start' });
-    });
-    return;
-  }
+    if (href.startsWith('#') || href.startsWith('/#')) {
+      e.preventDefault();
+      const hash = href.startsWith('/#') ? href.slice(1) : href;
+      showLoader(800).then(() => {
+        history.pushState(null, '', hash);
+        const el = document.querySelector(hash);
+        if (el) el.scrollIntoView({ behavior: 'instant', block: 'start' });
+      });
+      return;
+    }
 
-  // same-origin path navigation (e.g. "/explore")
-  if (href.startsWith('/')) {
-    e.preventDefault();
-    showLoader(LOAD_MS).then(() => { window.location.href = href; });
-  }
-});
+    if (href.startsWith('/')) {
+      e.preventDefault();
+      showLoader(800).then(() => { window.location.href = href; });
+    }
+  });
 
-  // Expose for manual use if you add a client router later
   window.PFLoader = { show: showLoader, hide: hideLoader };
 })();
-
