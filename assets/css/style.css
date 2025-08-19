@@ -284,6 +284,14 @@ nav {
   overflow: auto;
   backdrop-filter: blur(8px);
   box-shadow: 0 10px 40px rgba(0, 0, 0, .3);
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  will-change: opacity, transform;
+}
+#menu-dropdown.active {
+  opacity: 1;
+  transform: translateY(0);
 }
 #menu-dropdown a {
   display: block;
@@ -294,19 +302,54 @@ nav {
   cursor: pointer;
   font-family: Poppins, Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
   font-weight: 600;
-  transition: background-color .2s;
+  transition: background-color 0.2s ease-out;
   border: none;
   background: transparent;
 }
 #menu-dropdown a:hover,
 #menu-dropdown a:focus {
-  background: rgba(255, 255, 255, .08);
+  background: rgba(168, 85, 247, .15);
   outline: none;
 }
-#menu-dropdown a:focus {
-  background: rgba(168, 85, 247, .15);
+.menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  border: 1px solid var(--b);
+  background: rgba(9, 11, 18, .98);
+  border-radius: 12px;
+  max-height: 260px;
+  overflow: auto;
+  z-index: 1200;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  will-change: opacity, transform;
 }
-
+.select[open] .menu {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+.menu button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  background: transparent;
+  border: 0;
+  color: var(--txt);
+  cursor: pointer;
+  font-family: Poppins, Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+  transition: background-color 0.2s ease-out;
+}
+.menu button:hover,
+.menu button:focus {
+  background: rgba(168, 85, 247, .15);
+  outline: none;
+}
 .badge {
   font-size: 12px;
   padding: 4px 8px;
@@ -534,10 +577,6 @@ footer {
   }
   .filters .grid {
     grid-template-columns: 1fr 1fr
-  }
-  #menu-dropdown {
-    right: -16px;
-    min-width: 140px;
   }
 }
 /* — Page Loader — */
