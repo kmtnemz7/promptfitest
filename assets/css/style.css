@@ -400,7 +400,17 @@ h2 {
   border: 1px solid var(--b);
   background: rgba(255, 255, 255, .05);
   border-radius: 22px;
-  overflow: hidden
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, box-shadow;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+.card:focus-within {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
 }
 .card-body {
   padding: 16px
