@@ -251,7 +251,7 @@ function applyFilters(){
     if (cat && p.cat!==cat) return false;
     return !query || hay.includes(query);
   });
-  
+ AscendingList(list);
   if (sort === 'priceAsc') list.sort((a,b)=>a.price-b.price);
   if (sort === 'priceDesc') list.sort((a,b)=>b.price-a.price);
   if (sort === 'alpha') list.sort((a,b)=>a.title.localeCompare(b.title));
@@ -344,9 +344,7 @@ function openModal(id, unlocked=false, sig=null){
   mMeta.textContent = `${p.cat} • ${p.model} • ${p.lang} — ${priceLabel(p.price)}`;
   
   const owned = localStorage.getItem('pf_owned_'+id)==='1' || unlocked;
-  const brief = $('#uBrief')?.value?.trim() || '';
-  
-  mText.textContent = owned ? p.full : (brief ? (`Preview with your brief: `+brief.slice(0,160)+'…') : p.preview);
+  mText.textContent = owned ? p.full : p.preview; // Show preview if not unlocked
   
   if (copyBtn) copyBtn.classList.toggle('hidden', !owned);
   if (txLink) {
@@ -461,42 +459,75 @@ async function buyPrompt(id){
     
     const briefEl = $('#uBrief');
     const contactEl = $('#uContact');
-    const brief = briefEl?.value?.trim() || '';
     const contact = contactEl?.value?.trim() || '';
     
-    if (brief.length < 3) return toast('Please enter a short brief.');
     if (!contact) return toast('Add your contact (email or Telegram).');
-
-    if (p.price <= 0) {
-      savePurchase(id, 'FREE', brief, contact);
-      openModal(id, true, null);
-      toast('Unlocked (free) ✅');
-      return;
-    }
-
-    if (!walletPubkey) { await connectWallet(); if(!walletPubkey) return; }
     
-    const amount = p.price;
-    toast('Preparing transaction…');
-    const lamports = Math.round(amount * solanaWeb3.LAMPORTS_PER_SOL);
-    const tx = new solanaWeb3.Transaction().add(
-      solanaWeb3.SystemProgram.transfer({
-        fromPubkey: walletPubkey,
-        toPubkey: new solanaWeb3.PublicKey(RECIPIENT),
-        lamports
-      })
-    );
-    tx.feePayer = walletPubkey;
-    const latest = await connection.getLatestBlockhash('finalized');
-    tx.recentBlockhash = latest.blockhash;
-    toast('Waiting for signature…');
-    const signed = await provider.signTransaction(tx);
-    const sig = await connection.sendRawTransaction(signed.serialize());
-    toast('Confirming (finalized)…');
-    await connection.confirmTransaction({ signature: sig }, 'finalized');
-    savePurchase(id, sig, brief, contact);
-    openModal(id, true, sig);
-    toast('Unlocked ✅');
+    const addBrief = confirm('Do you want to add a brief?');
+    if (!addBrief) {
+      // Proceed without brief
+      if (p.price <= 0) {
+        savePurchase(id, 'FREE', '', contact);
+        openModal(id, true, null);
+        toast('Unlocked (free) ✅');
+        return;
+      }
+      if (!walletPubkey) { await connectWallet(); if (!walletPubkey) return; }
+      
+      const amount = p.price;
+      toast('Preparing transaction…');
+      const lamports = Math.round(amount * solanaWeb3.LAMPORTS_PER_SOL);
+      const tx = new solanaWeb3.Transaction().add(
+        solanaWeb3.SystemProgram.transfer({
+          fromPubkey: walletPubkey,
+          toPubkey: new solanaWeb3.PublicKey(RECIPIENT),
+          lamports
+        })
+      );
+      tx.feePayer = walletPubkey;
+      const latest = await connection.getLatestBlockhash('finalized');
+      tx.recentBlockhash = latest.blockhash;
+      toast('Waiting for signature…');
+      const signed = await provider.signTransaction(tx);
+      const sig = await connection.sendRawTransaction(signed.serialize());
+      toast('Confirming (finalized)…');
+      await connection.confirmTransaction({ signature: sig }, 'finalized');
+      savePurchase(id, sig, '', contact);
+      openModal(id, true, sig);
+      toast('Unlocked ✅');
+    } else {
+      // Keep modal open for brief input
+      const brief = briefEl?.value?.trim() || '';
+      if (p.price <= 0) {
+        savePurchase(id, 'FREE', brief, contact);
+        openModal(id, true, null);
+        toast('Unlocked (free) ✅');
+        return;
+      }
+      if (!walletPubkey) { await connectWallet(); if (!walletPubkey) return; }
+      
+      const amount = p.price;
+      toast('Preparing transaction…');
+      const lamports = Math.round(amount * solanaWeb3.LAMPORTS_PER_SOL);
+      const tx = new solanaWeb3.Transaction().add(
+        solanaWeb3.SystemProgram.transfer({
+          fromPubkey: walletPubkey,
+          toPubkey: new solanaWeb3.PublicKey(RECIPIENT),
+          lamports
+        })
+      );
+      tx.feePayer = walletPubkey;
+      const latest = await connection.getLatestBlockhash('finalized');
+      tx.recentBlockhash = latest.blockhash;
+      toast('Waiting for signature…');
+      const signed = await provider.signTransaction(tx);
+      const sig = await connection.sendRawTransaction(signed.serialize());
+      toast('Confirming (finalized)…');
+      await connection.confirmTransaction({ signature: sig }, 'finalized');
+      savePurchase(id, sig, brief, contact);
+      openModal(id, true, sig);
+      toast('Unlocked ✅');
+    }
   } catch(e) {
     console.error('Payment error:', e);
     toast('Payment failed or cancelled');
