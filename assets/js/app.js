@@ -2,9 +2,9 @@
 const RECIPIENT = "C8X7hd8xD36kX3Ddh2qf3NNDYaFgQBrjtJVJpU5DHEAr";
 const PRICES = { p0: 0.00, p1: 0.30, p2: 0.12, p3: 0.40, p4: 0.18, p5: 0.22, p6: 0.25 };
 const DATA = [
-  {id:'p0', title:'FREE: Prompt Starter Pack', cat:'Content', model:'Any', lang:'EN', price:PRICES.p0,
-    full:'Starter pack with 5 versatile prompts: 1) Product description with USP/CTA. 2) Tweet thread outline with 3 hooks. 3) Landing page hero with 3 value props. 4) YouTube video outline with hook and beats. 5) Growth experiment with KPI and hypothesis.',
-    preview:'Free starter pack with 5 versatile prompts (copy, thread, hero, YT, growth).'},
+  {id:'p0', title:'FREE: Idea Generator Prompt', cat:'Content', model:'Any', lang:'EN', price:PRICES.p0,
+    full:'Act as a creative strategist. Generate 10 unique content ideas for (SUBJECT), each with a clear angle, target audience, and suggested format (tweet, short video, blog, or graphic). Ensure ideas are practical, engaging, and optimized for virality.',
+    preview:'Generate 10 unique content ideas for (SUBJECT) with angle, audience, and format.'},
   {id:'p1', title:'Pro Graphic Design Prompt', cat:'Design', model:'Midjourney/GPT', lang:'EN', price:PRICES.p1,
     full:'You are an award-winning brand designer tasked with creating a complete professional logo design brief for (SUBJECT). The concept must reflect a futuristic yet minimal aesthetic, incorporating constraints such as scalability, brand adaptability, and commercial usability. Define the creative direction through mood boards, color palette specifications (with hex values), and typography guidelines (primary and secondary typefaces with usage rules). Outline the intended emotional response, design hierarchy, and visual balance. Deliver clear export specifications including vector-based formats (SVG/AI) and raster assets (PNG/JPG) optimized for both print and digital applications. Ensure the final outcome is versatile enough for logos, social media branding, and product packaging.',
     preview:'Generate a professional logo brief for (SUBJECT) with creative direction, color palette, typography, and export specs.'},
