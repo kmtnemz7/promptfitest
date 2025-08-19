@@ -14,12 +14,11 @@ html,
 body {
   margin: 0;
   padding: 0;
-  /* Dark, blurred-look gradient using your g1/g2/g3 palette */
   background:
     radial-gradient(50% 55% at 18% 12%, rgba(168, 85, 247, 0.10), transparent 60%),
     radial-gradient(50% 55% at 82% 18%, rgba(6, 182, 212, 0.08), transparent 60%),
     radial-gradient(60% 70% at 50% 85%, rgba(59, 130, 246, 0.08), transparent 60%),
-    linear-gradient(180deg, #05070c 0%, #060811 100%); /* deep base behind the glows */
+    linear-gradient(180deg, #05070c 0%, #060811 100%);
   color: var(--txt);
   font-family: Poppins, Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
 }
@@ -73,10 +72,10 @@ nav {
 .btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
-  opacity: 0.9; /* Subtle opacity change for hover */
+  opacity: 0.9;
 }
 .btn:active {
-  transform: scale(0.98); /* Slight scale-down on click */
+  transform: scale(0.98);
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 .btn:focus {
@@ -104,7 +103,6 @@ nav {
   50% { outline-color: rgba(168, 85, 247, 0.5); }
   100% { outline-color: var(--g1); }
 }
-/* Roadmap Styles */
 .roadmap-timeline {
   display: flex;
   flex-direction: column;
@@ -112,16 +110,14 @@ nav {
   max-width: 900px;
   margin: 0 auto;
 }
-
 .roadmap-phase {
   position: relative;
   border: 1px solid var(--b);
   background: rgba(255, 255, 255, .04);
   border-radius: 18px;
   overflow: hidden;
-  transition: transform .2s, box-shadow .2s;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
-
 .roadmap-phase::before {
   content: '';
   position: absolute;
@@ -131,13 +127,11 @@ nav {
   height: 3px;
   background: linear-gradient(90deg, var(--g1), var(--g2), var(--g3));
 }
-
 .phase-header {
   padding: 20px 24px 12px;
   border-bottom: 1px solid var(--b);
   background: rgba(255, 255, 255, .02);
 }
-
 .phase-badge {
   display: inline-block;
   font-size: 12px;
@@ -150,18 +144,15 @@ nav {
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-
 .phase-header h3 {
   margin: 0;
   font-size: 20px;
   font-weight: 600;
   color: var(--txt);
 }
-
 .phase-content {
   padding: 20px 24px;
 }
-
 .phase-content ul {
   list-style: none;
   padding: 0;
@@ -169,14 +160,12 @@ nav {
   display: grid;
   gap: 12px;
 }
-
 .phase-content li {
   position: relative;
   padding-left: 20px;
   color: var(--txt);
   line-height: 1.5;
 }
-
 .phase-content li::before {
   content: '▶';
   position: absolute;
@@ -186,7 +175,6 @@ nav {
   font-size: 10px;
   line-height: 1.5;
 }
-
 .targets {
   margin-top: 16px;
   padding: 12px 16px;
@@ -197,43 +185,30 @@ nav {
   color: var(--txt);
   line-height: 1.4;
 }
-
 .targets strong {
   color: var(--g2);
 }
-
-/* Mobile responsiveness for roadmap */
 @media (max-width: 768px) {
   .roadmap-timeline {
     gap: 16px;
   }
-  
   .phase-header {
     padding: 16px 20px 10px;
   }
-  
   .phase-header h3 {
     font-size: 18px;
   }
-  
   .phase-content {
     padding: 16px 20px;
   }
-  
   .phase-content li {
     font-size: 14px;
   }
-  
   .targets {
     padding: 10px 12px;
     font-size: 13px;
   }
 }
-
-.hidden {
-  display: none;
-}
-/* Ensure "Connect Wallet" matches other nav buttons */
 .nav-actions {
   display: flex;
   align-items: center;
@@ -245,7 +220,6 @@ nav {
   background: rgba(255, 255, 255, .05);
   color: var(--txt);
 }
-/* Handle "Connect Wallet" glow state */
 .nav-actions .btn.glow {
   background: linear-gradient(90deg, var(--g1), var(--g2));
   color: #0b0d12;
@@ -255,12 +229,10 @@ nav {
   transform: translateY(-1px);
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 10px 44px rgba(168, 85, 247, .25);
 }
-/* Update marketplace grey buttons to white text with higher specificity */
 #grid .prompt-card .btn {
   color: #ffffff;
   background: rgba(255, 255, 255, .05);
 }
-/* Restore unique color scheme for marketplace glow buttons */
 #grid .prompt-card .btn.glow {
   background: linear-gradient(90deg, var(--g1), var(--g2));
   color: #0b0d12;
@@ -271,8 +243,6 @@ nav {
   transform: translateY(-1px);
   box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 10px 44px rgba(168, 85, 247, .25);
 }
-
-/* Dropdown Menu Styles */
 .dropdown-container {
   position: relative;
 }
@@ -308,45 +278,6 @@ nav {
 }
 #menu-dropdown a:hover,
 #menu-dropdown a:focus {
-  background: rgba(168, 85, 247, .15);
-  outline: none;
-}
-.menu {
-  display: none;
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  right: 0;
-  border: 1px solid var(--b);
-  background: rgba(9, 11, 18, .98);
-  border-radius: 12px;
-  max-height: 260px;
-  overflow: auto;
-  z-index: 1200;
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-  will-change: opacity, transform;
-}
-.select[open] .menu {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
-}
-.menu button {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 10px 12px;
-  background: transparent;
-  border: 0;
-  color: var(--txt);
-  cursor: pointer;
-  font-family: Poppins, Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
-  transition: background-color 0.2s ease-out;
-}
-.menu button:hover,
-.menu button:focus {
   background: rgba(168, 85, 247, .15);
   outline: none;
 }
@@ -439,7 +370,7 @@ h2 {
   border-color: rgba(168, 85, 247, 0.5);
 }
 textarea.input:focus {
-  transform: scale(1.01); /* Subtle scale for textareas */
+  transform: scale(1.01);
 }
 .filters .grid {
   align-items: end
@@ -458,15 +389,9 @@ footer {
   animation: pulse 1.2s infinite ease-in-out
 }
 @keyframes pulse {
-  0% {
-    opacity: .7
-  }
-  50% {
-    opacity: .35
-  }
-  100% {
-    opacity: .7
-  }
+  0% { opacity: .7 }
+  50% { opacity: .35 }
+  100% { opacity: .7 }
 }
 .toast {
   position: fixed;
@@ -476,8 +401,15 @@ footer {
   border: 1px solid var(--b);
   padding: 10px 14px;
   border-radius: 12px;
-  display: none;
-  z-index: 2000
+  z-index: 2000;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  will-change: opacity, transform;
+}
+.toast.active {
+  opacity: 1;
+  transform: translateX(0);
 }
 .modal {
   position: fixed;
@@ -520,7 +452,6 @@ footer {
   display: flex;
   align-items: stretch;
 }
-/* Custom dropdown with <details> */
 .select {
   position: relative
 }
@@ -537,7 +468,9 @@ footer {
   gap: 8px
 }
 .select[open] .menu {
-  display: block
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
 }
 .menu {
   display: none;
@@ -550,7 +483,11 @@ footer {
   border-radius: 12px;
   max-height: 260px;
   overflow: auto;
-  z-index: 1200
+  z-index: 1200;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+  will-change: opacity, transform;
 }
 .menu button {
   display: block;
@@ -562,14 +499,34 @@ footer {
   color: var(--txt);
   cursor: pointer;
   font-family: Poppins, Inter, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+  transition: background-color 0.2s ease-out;
 }
-.menu button:hover {
-  background: rgba(255, 255, 255, .06)
+.menu button:hover,
+.menu button:focus {
+  background: rgba(168, 85, 247, .15);
+  outline: none;
 }
-.hidden {
-  display: none;
+@media (prefers-reduced-motion: reduce) {
+  .page-loader,
+  .spinner,
+  .btn,
+  .card,
+  .modal,
+  .modal .box,
+  #menu-dropdown,
+  .menu,
+  .toast,
+  .input {
+    transition: none;
+    animation: none;
+  }
+  .page-loader.is-hidden,
+  .modal:not(.active),
+  #menu-dropdown:not(.active),
+  .toast:not(.active) {
+    transform: none;
+  }
 }
-/* Mobile */
 @media (max-width: 900px) {
   .grid-2,
   .grid-3 {
@@ -595,8 +552,11 @@ footer {
   .filters .grid {
     grid-template-columns: 1fr 1fr
   }
+  #menu-dropdown {
+    right: -16px;
+    min-width: 140px;
+  }
 }
-/* — Page Loader — */
 .page-loader {
   position: fixed;
   inset: 0;
@@ -618,7 +578,7 @@ footer {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: scale(1.02); /* Subtle zoom-out for exit */
+  transform: scale(1.02);
 }
 .spinner {
   width: 60px;
@@ -630,6 +590,9 @@ footer {
   border-bottom-color: var(--g3);
   animation: pf-spin 1s linear infinite, spinner-appear 0.4s ease-out;
   transform-origin: center;
+}
+@keyframes pf-spin {
+  to { transform: rotate(360deg); }
 }
 @keyframes spinner-appear {
   0% { opacity: 0; transform: scale(0.8); }
