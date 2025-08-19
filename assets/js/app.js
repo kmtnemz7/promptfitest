@@ -2,6 +2,9 @@
 const RECIPIENT = "C8X7hd8xD36kX3Ddh2qf3NNDYaFgQBrjtJVJpU5DHEAr";
 const PRICES = { p0: 0.00, p1: 0.30, p2: 0.12, p3: 0.40, p4: 0.18, p5: 0.22, p6: 0.25 };
 const DATA = [
+  {id:'p0', title:'FREE: Prompt Starter Pack', cat:'Content', model:'Any', lang:'EN', price:PRICES.p0,
+    full:'Starter pack with 5 versatile prompts: 1) Product description with USP/CTA. 2) Tweet thread outline with 3 hooks. 3) Landing page hero with 3 value props. 4) YouTube video outline with hook and beats. 5) Growth experiment with KPI and hypothesis.',
+    preview:'Free starter pack with 5 versatile prompts (copy, thread, hero, YT, growth).'},
   {id:'p1', title:'Pro Graphic Design Prompt', cat:'Design', model:'Midjourney/GPT', lang:'EN', price:PRICES.p1,
     full:'You are an award-winning brand designer tasked with creating a complete professional logo design brief for (SUBJECT). The concept must reflect a futuristic yet minimal aesthetic, incorporating constraints such as scalability, brand adaptability, and commercial usability. Define the creative direction through mood boards, color palette specifications (with hex values), and typography guidelines (primary and secondary typefaces with usage rules). Outline the intended emotional response, design hierarchy, and visual balance. Deliver clear export specifications including vector-based formats (SVG/AI) and raster assets (PNG/JPG) optimized for both print and digital applications. Ensure the final outcome is versatile enough for logos, social media branding, and product packaging.',
     preview:'Generate a professional logo brief for (SUBJECT) with creative direction, color palette, typography, and export specs.'},
@@ -20,7 +23,6 @@ const DATA = [
   {id:'p6', title:'Strategy: DeFi Growth Plan', cat:'Crypto', model:'GPT', lang:'EN', price:PRICES.p6,
     full:'You are a DeFi growth lead tasked with creating a comprehensive 30-day growth strategy for (SUBJECT). The plan must define clear objectives and measurable KPIs, identify acquisition and retention channels, and outline key marketing experiments. Include community growth tactics, influencer or partnership outreach, and user incentive structures. Provide a detailed reporting cadence for tracking performance, along with contingency adjustments based on early results. Ensure the plan balances short-term traction with long-term sustainability within the DeFi ecosystem.',
     preview:'Design a 30-day DeFi growth plan for (SUBJECT) with KPIs, channels, experiments, and reporting cadence.'}
-
 ];
 
 let connection = null;
