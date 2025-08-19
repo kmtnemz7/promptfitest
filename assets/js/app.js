@@ -134,6 +134,7 @@ function initDropdownMenu() {
     if (isOpen) return;
     isOpen = true;
     menuDropdown.style.display = 'block';
+    setTimeout(() => menuDropdown.classList.add('active'), 10); // Trigger animation
     menuTrigger.setAttribute('aria-expanded', 'true');
     
     const firstItem = menuDropdown.querySelector('a');
@@ -143,7 +144,8 @@ function initDropdownMenu() {
   function closeMenu() {
     if (!isOpen) return;
     isOpen = false;
-    menuDropdown.style.display = 'none';
+    menuDropdown.classList.remove('active');
+    setTimeout(() => menuDropdown.style.display = 'none', 300); // Match transition duration
     menuTrigger.setAttribute('aria-expanded', 'false');
     menuTrigger.focus();
   }
@@ -200,6 +202,75 @@ function initDropdownMenu() {
         } else if (!e.shiftKey && currentIndex === items.length - 1) {
           closeMenu();
         }
+        break;
+    }
+  });
+}
+
+function dropdown(rootId, items){
+  const root = document.getElementById(rootId);
+  if (!root) return;
+  
+  const summary = root.querySelector('summary');
+  const val = root.querySelector('.value');
+  const menu = root.querySelector('.menu');
+  if (!val || !menu || !summary) return;
+  
+  menu.innerHTML = items.map(([key, text])=>`<button data-k="${key}">${text}</button>`).join('');
+  
+  summary.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (root.hasAttribute('open')) {
+      root.removeAttribute('open');
+    } else {
+      root.setAttribute('open', '');
+    }
+  });
+  
+  menu.addEventListener('click', (e) => {
+    const k = e.target?.dataset?.k;
+    if (!k) return;
+    
+    val.dataset.value = k === '__all' ? '' : k;
+    val.textContent = items.find(x => x[0] === k)?.[1] || items[0][1];
+    
+    root.removeAttribute('open');
+    
+    applyFilters();
+  });
+  
+  document.addEventListener('click', (e) => {
+    if (!root.contains(e.target)) {
+      root.removeAttribute('open');
+    }
+  });
+  
+  root.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      root.removeAttribute('open');
+      summary.focus();
+    }
+  });
+  
+  menu.addEventListener('keydown', (e) => {
+    const buttons = Array.from(menu.querySelectorAll('button'));
+    const currentIndex = buttons.indexOf(e.target);
+    
+    switch(e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        const nextIndex = currentIndex < buttons.length - 1 ? currentIndex + 1 : 0;
+        buttons[nextIndex].focus();
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        const prevIndex = currentIndex > 0 ? currentIndex - 1 : buttons.length - 1;
+        buttons[prevIndex].focus();
+        break;
+      case 'Enter':
+      case ' ':
+        e.preventDefault();
+        e.target.click();
         break;
     }
   });
