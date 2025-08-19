@@ -568,7 +568,7 @@ window.addEventListener('load', async () => {
   if (!loader) return;
 
   function hideLoader(){ loader.classList.add('is-hidden'); }
-  function showLoader(ms=1650){
+  function showLoader(ms = 800) {
     loader.classList.remove('is-hidden');
     return new Promise(res => setTimeout(() => { hideLoader(); res(); }, ms));
   }
