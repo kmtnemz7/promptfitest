@@ -4,13 +4,13 @@ const PRICES = { p0: 0.00, p1: 0.30, p2: 0.12, p3: 0.40, p4: 0.18, p5: 0.22, p6:
 const DATA = [
   {
     id: 'p0',
-    title: 'FREE: Prompt Starter Pack',
+    title: 'FREE: Graphic design prompt',
     cat: 'Content',
-    model: 'Any',
+    model: 'Gemeni/GPT/Google',
     lang: 'EN',
     price: PRICES.p0,
-    full: 'Starter pack with 5 versatile prompts: 1) Write a concise product description with USP and CTA. 2) Create a tweet thread outline with 3 hook options. 3) Draft a landing page hero line with 3 value props. 4) Produce a YouTube video outline with hook and segment beats. 5) Generate a growth experiment idea with KPI and hypothesis.',
-    preview: 'Try PromptFi with a free starter pack of 5 versatile prompts (copy, thread, hero, YT, growth).'
+    full: 'Ultra-detailed professional design of (SUBJECT), created in a cinematic digital art style. Rendered with 8K resolution, photorealistic textures, hyper-detailed lighting, and dynamic depth of field. The composition should emphasize symmetry, balance, and visual hierarchy suitable for commercial use. Use color theory principles (contrasting complementary palette, gradient harmonies) to draw focus toward the central subject. Integrate vector-based sharp edges layered with soft atmospheric effects for depth. Include intricate geometric patterns and abstract design motifs woven subtly into the background to give the artwork a sense of complexity and refinement. Deliver in scalable formats (SVG/PNG) with transparent background, optimized for both digital branding and high-quality print. Style references: futuristic graphic design posters, Swiss typography precision, cyber-aesthetic glow accents. The output must be clean, minimal clutter, yet striking enough to work as marketing material, social media branding, or product packaging',
+    preview: 'Try PromptFi with a free starter pack of an advanced graphic design prompt.'
   },
   {
     id: 'p1',
@@ -19,8 +19,8 @@ const DATA = [
     model: 'Midjourney/GPT',
     lang: 'EN',
     price: PRICES.p1,
-    full: 'You are an award-winning brand designer... Create a futuristic, minimal logo brief with constraints, mood, palette, typography, and export specs.',
-    preview: 'Create a futuristic, minimal logo brief with constraints, mood, palette...'
+    full: 'You are an award-winning brand designer tasked with creating a complete professional logo design brief for (SUBJECT). The concept must reflect a futuristic yet minimal aesthetic, incorporating constraints such as scalability, brand adaptability, and commercial usability. Define the creative direction through mood boards, color palette specifications (with hex values), and typography guidelines (primary and secondary typefaces with usage rules). Outline the intended emotional response, design hierarchy, and visual balance. Deliver clear export specifications including vector-based formats (SVG/AI) and raster assets (PNG/JPG) optimized for both print and digital applications. Ensure the final outcome is versatile enough for logos, social media branding, and product packaging.',
+    preview: 'Generate a professional logo brief for (SUBJECT) with creative direction, color palette, typography, and export specs.'
   },
   {
     id: 'p2',
@@ -29,8 +29,8 @@ const DATA = [
     model: 'Any',
     lang: 'EN',
     price: PRICES.p2,
-    full: 'Act as a viral ghostwriter... Output a 10-tweet thread with 3 hook variants, pacing, meme moments, and measurable CTA.',
-    preview: 'Output a 10-tweet thread with 3 hook variants, pacing, meme moments...'
+    full: 'Act as a professional viral ghostwriter specializing in growth marketing. Write a 10-post X (Twitter) thread on (SUBJECT) designed to maximize reach, engagement, and conversions. Provide 3 alternative hook options optimized for curiosity, controversy, or authority positioning. Structure the pacing to maintain reader retention with varied sentence lengths, cliffhangers, and embedded value drops. Incorporate meme-worthy moments, relatable analogies, and shareable phrasing to increase repost potential. End with a clear, measurable call-to-action (CTA) aligned with the objective—whether driving followers, clicks, or conversions. Deliver the output in a polished format ready to post, with optional hashtags and suggested visuals.',
+    preview: 'Produce a viral-ready 10-post X thread on (SUBJECT) with strong hooks, engaging pacing, and a clear CTA.'
   },
   {
     id: 'p3',
@@ -39,8 +39,8 @@ const DATA = [
     model: 'GPT',
     lang: 'EN',
     price: PRICES.p3,
-    full: 'You are a DeFi strategist... Produce a rigorous whitepaper outline: problem, protocol design, tokenomics, risk, KPIs, and roadmap.',
-    preview: 'Produce a rigorous whitepaper outline: problem, design, tokenomics...'
+    full: 'You are a professional DeFi strategist tasked with creating a rigorous whitepaper outline for (SUBJECT). The outline should include: problem statement, protocol design, tokenomics structure, governance model, risk analysis, key performance indicators (KPIs), and development roadmap. Ensure the framework is investor-ready, technically sound, and structured for both technical and non-technical audiences. The final output must provide clarity, credibility, and scalability potential for (SUBJECT) within the DeFi ecosystem.',
+    preview: 'Develop a complete DeFi whitepaper outline for (SUBJECT), covering problem, design, tokenomics, risks, KPIs, and roadmap.'
   },
   {
     id: 'p4',
@@ -49,8 +49,8 @@ const DATA = [
     model: 'GPT',
     lang: 'EN',
     price: PRICES.p4,
-    full: 'You are a senior YouTube scriptwriter... Write a 7-minute script with hook, open loop, 3 segments, and strong CTA variations.',
-    preview: 'Write a 7-minute script with hook, open loop, 3 segments...'
+    full: 'You are a senior YouTube scriptwriter tasked with creating a high-retention 7-minute script on (SUBJECT). The script must include: a powerful opening hook, an open loop to sustain attention, three structured content segments that deliver value and engagement, and multiple call-to-action (CTA) variations tailored for subscriptions, comments, and shares. Ensure pacing is optimized for audience retention, with natural transitions, conversational tone, and storytelling techniques. Deliver the script in a polished, ready-to-record format suitable for professional YouTube content creation.',
+    preview: 'Create a 7-minute YouTube script on (SUBJECT) with a strong hook, open loop, structured segments, and CTA variations.'
   },
   {
     id: 'p5',
@@ -59,8 +59,8 @@ const DATA = [
     model: 'GPT',
     lang: 'EN',
     price: PRICES.p5,
-    full: 'Act as a senior conversion copywriter... Produce hero, value props, and CTA variants with tone sliders and A/B test hooks.',
-    preview: 'Produce hero, value props, and CTA variants with tone sliders...'
+    full: 'Act as a senior conversion copywriter tasked with writing high-performing landing page copy for (SUBJECT). Produce a complete framework including: a compelling hero section, clear value propositions, social proof elements, objection handling, and multiple call-to-action (CTA) variants. Provide tone sliders ranging from casual to professional, and A/B test-ready hook variations. Ensure the copy aligns with user psychology, emphasizes benefits over features, and is optimized for maximum conversion across desktop and mobile.',
+    preview: 'Write optimized landing page copy for (SUBJECT) with hero, value props, social proof, and CTA variants ready for A/B testing.'
   },
   {
     id: 'p6',
@@ -69,8 +69,8 @@ const DATA = [
     model: 'GPT',
     lang: 'EN',
     price: PRICES.p6,
-    full: 'You are a DeFi growth lead... Create a 30-day growth plan with KPIs, channels, experiments, and reporting cadence.',
-    preview: 'Create a 30-day growth plan with KPIs, channels, experiments...'
+    full: 'You are a DeFi growth lead tasked with creating a comprehensive 30-day growth strategy for (SUBJECT). The plan must define clear objectives and measurable KPIs, identify acquisition and retention channels, and outline key marketing experiments. Include community growth tactics, influencer or partnership outreach, and user incentive structures. Provide a detailed reporting cadence for tracking performance, along with contingency adjustments based on early results. Ensure the plan balances short-term traction with long-term sustainability within the DeFi ecosystem.',
+    preview: 'Design a 30-day DeFi growth plan for (SUBJECT) with KPIs, channels, experiments, and reporting cadence.'
   }
 ];
 
