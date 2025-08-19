@@ -258,76 +258,6 @@ function applyFilters(){
   renderGrid(list);
 }
 
-// ---- FIXED DROPDOWN FUNCTION ----
-function dropdown(rootId, items){
-  const root = document.getElementById(rootId);
-  if (!root) return;
-  
-  const summary = root.querySelector('summary');
-  const val = root.querySelector('.value');
-  const menu = root.querySelector('.menu');
-  if (!val || !menu || !summary) return;
-  
-  menu.innerHTML = items.map(([key, text])=>`<button data-k="${key}">${text}</button>`).join('');
-  
-  summary.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (root.hasAttribute('open')) {
-      root.removeAttribute('open');
-    } else {
-      root.setAttribute('open', '');
-    }
-  });
-  
-  menu.addEventListener('click', (e) => {
-    const k = e.target?.dataset?.k;
-    if (!k) return;
-    
-    val.dataset.value = k === '__all' ? '' : k;
-    val.textContent = items.find(x => x[0] === k)?.[1] || items[0][1];
-    
-    root.removeAttribute('open');
-    
-    applyFilters();
-  });
-  
-  document.addEventListener('click', (e) => {
-    if (!root.contains(e.target)) {
-      root.removeAttribute('open');
-    }
-  });
-  
-  root.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      root.removeAttribute('open');
-      summary.focus();
-    }
-  });
-  
-  menu.addEventListener('keydown', (e) => {
-    const buttons = Array.from(menu.querySelectorAll('button'));
-    const currentIndex = buttons.indexOf(e.target);
-    
-    switch(e.key) {
-      case 'ArrowDown':
-        e.preventDefault();
-        const nextIndex = currentIndex < buttons.length - 1 ? currentIndex + 1 : 0;
-        buttons[nextIndex].focus();
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        const prevIndex = currentIndex > 0 ? currentIndex - 1 : buttons.length - 1;
-        buttons[prevIndex].focus();
-        break;
-      case 'Enter':
-      case ' ':
-        e.preventDefault();
-        e.target.click();
-        break;
-    }
-  });
-}
-
 // ---- Custom Confirmation Function ----
 function confirmCustom(message) {
   return new Promise((resolve) => {
@@ -356,6 +286,23 @@ function confirmCustom(message) {
       closeConfirm();
       resolve(false);
     };
+
+    // Handle keyboard navigation
+    confirmYes.focus();
+    confirmModal.addEventListener('keydown', function handler(e) {
+      if (e.key === 'Escape') {
+        closeConfirm();
+        resolve(false);
+        confirmModal.removeEventListener('keydown', handler);
+      } else if (e.key === 'Tab') {
+        e.preventDefault();
+        if (document.activeElement === confirmYes) {
+          confirmNo.focus();
+        } else {
+          confirmYes.focus();
+        }
+      }
+    }, { once: false });
   });
 }
 
@@ -375,9 +322,7 @@ function openModal(id, unlocked=false, sig=null){
   mMeta.textContent = `${p.cat} • ${p.model} • ${p.lang} — ${priceLabel(p.price)}`;
   
   const owned = localStorage.getItem('pf_owned_'+id)==='1' || unlocked;
-  const brief = $('#uBrief')?.value?.trim() || '';
-  
-  mText.textContent = owned ? p.full : (brief ? (`Preview with your brief: `+brief.slice(0,160)+'…') : p.preview);
+  mText.textContent = owned ? p.full : p.preview; // Show preview if not unlocked
   
   if (copyBtn) copyBtn.classList.toggle('hidden', !owned);
   if (txLink) {
@@ -495,39 +440,143 @@ async function buyPrompt(id){
     const brief = briefEl?.value?.trim() || '';
     const contact = contactEl?.value?.trim() || '';
     
-    if (brief.length < 3) return toast('Please enter a short brief.');
-    if (!contact) return toast('Add your contact (email or Telegram).');
-
-    if (p.price <= 0) {
-      savePurchase(id, 'FREE', brief, contact);
-      openModal(id, true, null);
-      toast('Unlocked (free) ✅');
-      return;
+    const addBrief = await confirmCustom('Do you want to add a brief?');
+    if (!addBrief) {
+      // No brief, ask about contact
+      const addContact = await confirmCustom('Do you want to add a contact?');
+      if (!addContact) {
+        // Proceed without brief or contact
+        if (p.price <= 0) {
+          savePurchase(id, 'FREE', '', '');
+          openModal(id, true, null);
+          toast('Unlocked (free) ✅');
+          return;
+        }
+        if (!walletPubkey) { await connectWallet(); if (!walletPubkey) return; }
+        
+        const amount = p.price;
+        toast('Preparing transaction…');
+        const lamports = Math.round(amount * solanaWeb3.LAMPORTS_PER_SOL);
+        const tx = new solanaWeb3.Transaction().add(
+          solanaWeb3.SystemProgram.transfer({
+            fromPubkey: walletPubkey,
+            toPubkey: new solanaWeb3.PublicKey(RECIPIENT),
+            lamports
+          })
+        );
+        tx.feePayer = walletPubkey;
+        const latest = await connection.getLatestBlockhash('finalized');
+        tx.recentBlockhash = latest.blockhash;
+        toast('Waiting for signature…');
+        const signed = await provider.signTransaction(tx);
+        const sig = await connection.sendRawTransaction(signed.serialize());
+        toast('Confirming (finalized)…');
+        await connection.confirmTransaction({ signature: sig }, 'finalized');
+        savePurchase(id, sig, '', '');
+        openModal(id, true, sig);
+        toast('Unlocked ✅');
+      } else {
+        // No brief, keep modal open for contact
+        if (contact.length === 0) return; // Wait for contact input
+        if (p.price <= 0) {
+          savePurchase(id, 'FREE', '', contact);
+          openModal(id, true, null);
+          toast('Unlocked (free) ✅');
+          return;
+        }
+        if (!walletPubkey) { await connectWallet(); if (!walletPubkey) return; }
+        
+        const amount = p.price;
+        toast('Preparing transaction…');
+        const lamports = Math.round(amount * solanaWeb3.LAMPORTS_PER_SOL);
+        const tx = new solanaWeb3.Transaction().add(
+          solanaWeb3.SystemProgram.transfer({
+            fromPubkey: walletPubkey,
+            toPubkey: new solanaWeb3.PublicKey(RECIPIENT),
+            lamports
+          })
+        );
+        tx.feePayer = walletPubkey;
+        const latest = await connection.getLatestBlockhash('finalized');
+        tx.recentBlockhash = latest.blockhash;
+        toast('Waiting for signature…');
+        const signed = await provider.signTransaction(tx);
+        const sig = await connection.sendRawTransaction(signed.serialize());
+        toast('Confirming (finalized)…');
+        await connection.confirmTransaction({ signature: sig }, 'finalized');
+        savePurchase(id, sig, '', contact);
+        openModal(id, true, sig);
+        toast('Unlocked ✅');
+      }
+    } else {
+      // Keep modal open for brief input
+      if (brief.length === 0) return; // Wait for brief input
+      const addContact = await confirmCustom('Do you want to add a contact?');
+      if (!addContact) {
+        // Brief but no contact
+        if (p.price <= 0) {
+          savePurchase(id, 'FREE', brief, '');
+          openModal(id, true, null);
+          toast('Unlocked (free) ✅');
+          return;
+        }
+        if (!walletPubkey) { await connectWallet(); if (!walletPubkey) return; }
+        
+        const amount = p.price;
+        toast('Preparing transaction…');
+        const lamports = Math.round(amount * solanaWeb3.LAMPORTS_PER_SOL);
+        const tx = new solanaWeb3.Transaction().add(
+          solanaWeb3.SystemProgram.transfer({
+            fromPubkey: walletPubkey,
+            toPubkey: new solanaWeb3.PublicKey(RECIPIENT),
+            lamports
+          })
+        );
+        tx.feePayer = walletPubkey;
+        const latest = await connection.getLatestBlockhash('finalized');
+        tx.recentBlockhash = latest.blockhash;
+        toast('Waiting for signature…');
+        const signed = await provider.signTransaction(tx);
+        const sig = await connection.sendRawTransaction(signed.serialize());
+        toast('Confirming (finalized)…');
+        await connection.confirmTransaction({ signature: sig }, 'finalized');
+        savePurchase(id, sig, brief, '');
+        openModal(id, true, sig);
+        toast('Unlocked ✅');
+      } else {
+        // Brief and contact
+        if (contact.length === 0) return; // Wait for contact input
+        if (p.price <= 0) {
+          savePurchase(id, 'FREE', brief, contact);
+          openModal(id, true, null);
+          toast('Unlocked (free) ✅');
+          return;
+        }
+        if (!walletPubkey) { await connectWallet(); if (!walletPubkey) return; }
+        
+        const amount = p.price;
+        toast('Preparing transaction…');
+        const lamports = Math.round(amount * solanaWeb3.LAMPORTS_PER_SOL);
+        const tx = new solanaWeb3.Transaction().add(
+          solanaWeb3.SystemProgram.transfer({
+            fromPubkey: walletPubkey,
+            toPubkey: new solanaWeb3.PublicKey(RECIPIENT),
+            lamports
+          })
+        );
+        tx.feePayer = walletPubkey;
+        const latest = await connection.getLatestBlockhash('finalized');
+        tx.recentBlockhash = latest.blockhash;
+        toast('Waiting for signature…');
+        const signed = await provider.signTransaction(tx);
+        const sig = await connection.sendRawTransaction(signed.serialize());
+        toast('Confirming (finalized)…');
+        await connection.confirmTransaction({ signature: sig }, 'finalized');
+        savePurchase(id, sig, brief, contact);
+        openModal(id, true, sig);
+        toast('Unlocked ✅');
+      }
     }
-
-    if (!walletPubkey) { await connectWallet(); if(!walletPubkey) return; }
-    
-    const amount = p.price;
-    toast('Preparing transaction…');
-    const lamports = Math.round(amount * solanaWeb3.LAMPORTS_PER_SOL);
-    const tx = new solanaWeb3.Transaction().add(
-      solanaWeb3.SystemProgram.transfer({
-        fromPubkey: walletPubkey,
-        toPubkey: new solanaWeb3.PublicKey(RECIPIENT),
-        lamports
-      })
-    );
-    tx.feePayer = walletPubkey;
-    const latest = await connection.getLatestBlockhash('finalized');
-    tx.recentBlockhash = latest.blockhash;
-    toast('Waiting for signature…');
-    const signed = await provider.signTransaction(tx);
-    const sig = await connection.sendRawTransaction(signed.serialize());
-    toast('Confirming (finalized)…');
-    await connection.confirmTransaction({ signature: sig }, 'finalized');
-    savePurchase(id, sig, brief, contact);
-    openModal(id, true, sig);
-    toast('Unlocked ✅');
   } catch(e) {
     console.error('Payment error:', e);
     toast('Payment failed or cancelled');
@@ -597,6 +646,7 @@ window.addEventListener('load', async () => {
   
   renderPurchases();
 });
+
 // ---- Page Loader ----
 (function () {
   const loader = document.getElementById('pageLoader');
