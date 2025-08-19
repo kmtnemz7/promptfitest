@@ -366,6 +366,7 @@ function openModal(id, unlocked=false, sig=null){
   }
   
   modal.style.display = 'flex';
+  setTimeout(() => modal.classList.add('active'), 10); // Trigger animation after display
   
   const buyNow = $('#buyNow');
   if (buyNow) {
@@ -373,6 +374,14 @@ function openModal(id, unlocked=false, sig=null){
     buyNow.onclick = ()=>buyPrompt(id);
   }
 }
+
+window.closeModal = () => { 
+  const modal = $('#modal');
+  if (modal) {
+    modal.classList.remove('active');
+    setTimeout(() => modal.style.display = 'none', 400); // Match transition duration
+  }
+};
 
 // ---- Purchase Functions ----
 function savePurchase(id, sig, brief, contact){
