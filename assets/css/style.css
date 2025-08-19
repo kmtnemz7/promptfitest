@@ -506,6 +506,76 @@ footer {
   background: rgba(168, 85, 247, .15);
   outline: none;
 }
+/* Purchase Options Modal Styles */
+.purchase-options-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .7);
+  backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 1600;
+  opacity: 0;
+  transition: opacity 0.4s ease-out;
+}
+.purchase-options-modal.active {
+  display: flex;
+  opacity: 1;
+}
+.purchase-options-box {
+  max-width: 500px;
+  width: 100%;
+  border: 1px solid var(--b);
+  background: rgba(255, 255, 255, .08);
+  border-radius: 18px;
+  padding: 24px;
+  transform: scale(0.9);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.purchase-options-modal.active .purchase-options-box {
+  transform: scale(1);
+}
+.purchase-options-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.purchase-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border: 1px solid var(--b);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .04);
+  transition: background-color 0.2s ease;
+}
+.purchase-option:hover {
+  background: rgba(255, 255, 255, .08);
+}
+.purchase-option-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.purchase-option-title {
+  font-weight: 600;
+  color: var(--txt);
+}
+.purchase-option-description {
+  font-size: 14px;
+  color: var(--mut);
+}
+.purchase-option-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+}
+.purchase-option-buttons .btn {
+  flex: 1;
+}
 @media (prefers-reduced-motion: reduce) {
   .page-loader,
   .spinner,
@@ -513,6 +583,8 @@ footer {
   .card,
   .modal,
   .modal .box,
+  .purchase-options-modal,
+  .purchase-options-box,
   #menu-dropdown,
   .menu,
   .toast,
@@ -522,6 +594,7 @@ footer {
   }
   .page-loader.is-hidden,
   .modal:not(.active),
+  .purchase-options-modal:not(.active),
   #menu-dropdown:not(.active),
   .toast:not(.active) {
     transform: none;
@@ -555,6 +628,9 @@ footer {
   #menu-dropdown {
     right: -16px;
     min-width: 140px;
+  }
+  .purchase-options-box {
+    margin: 16px;
   }
 }
 .page-loader {
