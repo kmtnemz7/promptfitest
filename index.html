@@ -11,6 +11,9 @@
 <script src="https://unpkg.com/@solana/web3.js@1.95.3/lib/index.iife.min.js" defer></script>
 </head>
 <body>
+  <!-- Hex Network Background Canvas -->
+  <canvas id="hexCanvas"></canvas>
+
   <nav>
     <div class="container navbar">
       <a href="#home" class="brand">PromptFi</a>
@@ -37,7 +40,7 @@
             <a href="#how" class="btn">How it works</a>
           </div>
         </div>
-        <div class="hero-art" aria-hidden="true" style="height: 100%; min-height: 240px;"> <!-- Updated to match left content height -->
+        <div class="hero-art" aria-hidden="true" style="height: 100%; min-height: 240px;">
           <img src="assets/img/banner-witdesc.jpg" alt="Hero artwork for PromptFi" style="width: 100%; height: 100%; object-fit: cover; border-radius: 22px; border: 1px solid var(--b);">
         </div>
       </div>
@@ -92,7 +95,7 @@
       </p>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <input id="wlEmail" class="input" placeholder="Email or Telegram"/>
-        <button class="btn glow" onclick="localStorage.setItem('pf_waitlist', (localStorage.getItem('pf_waitlist')||'') + '\n' + document.getElementById('wlEmail').value); this.textContent='Joined ✓';">Join Waitlist</button>
+        <button class="btn glow" onclick="const val = document.getElementById('wlEmail').value; if(val.trim()) { var existing = ''; try { existing = JSON.parse(localStorage.getItem('pf_waitlist') || '[]'); } catch(e) { existing = []; } if(!Array.isArray(existing)) existing = []; existing.push(val.trim()); localStorage.setItem('pf_waitlist', JSON.stringify(existing)); this.textContent='Joined ✓'; } else { alert('Please enter your email or Telegram'); }">Join Waitlist</button>
       </div>
     </div>
   </section>
@@ -143,7 +146,3 @@
       </div>
     </div>
   </div>
-
-  <script src="assets/js/app.js"></script>
-</body>
-</html>
