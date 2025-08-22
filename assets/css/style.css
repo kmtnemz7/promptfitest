@@ -23,7 +23,7 @@ a {
   text-decoration: none
 }
 
-/* Background Canvas */
+/* Hex Background Canvas */
 #hexCanvas {
   position: fixed;
   top: 0;
@@ -313,6 +313,74 @@ footer {
 .menu button:hover {
   background: rgba(255, 255, 255, .06)
 }
+
+/* Roadmap Styles */
+.roadmap-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.roadmap-phase {
+  border: 1px solid var(--b);
+  background: rgba(255, 255, 255, .03);
+  border-radius: 18px;
+  padding: 24px;
+  position: relative;
+}
+
+.phase-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.phase-badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, var(--g1), var(--g2));
+  color: #0b0d12;
+  white-space: nowrap;
+}
+
+.phase-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--txt);
+}
+
+.phase-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px 0;
+}
+
+.phase-content li {
+  padding: 8px 0;
+  color: var(--txt);
+  border-bottom: 1px solid rgba(255, 255, 255, .05);
+}
+
+.phase-content li:last-child {
+  border-bottom: none;
+}
+
+.targets {
+  background: rgba(255, 255, 255, .02);
+  border: 1px solid var(--b);
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 14px;
+  color: var(--mut);
+  margin-top: 12px;
+}
+
 /* Mobile */
 @media (max-width: 900px) {
   .grid-2,
@@ -325,6 +393,14 @@ footer {
   .hero-art {
     height: auto;
     min-height: 180px;
+  }
+  .roadmap-phase {
+    padding: 18px;
+  }
+  .phase-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
   }
 }
 @media (max-width: 420px) {
