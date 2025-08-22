@@ -9,7 +9,7 @@ const DATA = [
     full:'You are an award-winning brand designer tasked with creating a complete professional logo design brief for (SUBJECT). The concept must reflect a futuristic yet minimal aesthetic, incorporating constraints such as scalability, brand adaptability, and commercial usability. Define the creative direction through mood boards, color palette specifications (with hex values), and typography guidelines (primary and secondary typefaces with usage rules). Outline the intended emotional response, design hierarchy, and visual balance. Deliver clear export specifications including vector-based formats (SVG/AI) and raster assets (PNG/JPG) optimized for both print and digital applications. Ensure the final outcome is versatile enough for logos, social media branding, and product packaging.',
     preview:'Generate a professional logo brief for (SUBJECT) with creative direction, color palette, typography, and export specs.'},
   {id:'p2', title:'Viral X Thread Prompt', cat:'Marketing', model:'Any', lang:'EN', price:PRICES.p2,
-    full:'Act as a professional viral ghostwriter specializing in growth marketing. Write a 10-post X (Twitter) thread on (SUBJECT) designed to maximize reach, engagement, and conversions. Provide 3 alternative hook options optimized for curiosity, controversy, or authority positioning. Structure the pacing to maintain reader retention with varied sentence lengths, cliffhangers, and embedded value drops. Incorporate meme-worthy moments, relatable analogies, and shareable phrasing to increase repost potential. End with a clear, measurable call-to-action (CTA) aligned with the objective—whether driving followers, clicks, or conversions. Deliver the output in a polished format ready to post, with optional hashtags and suggested visuals.',
+    full:'Act as a professional viral ghostwriter specializing in growth marketing. Write a 10-post X (Twitter) thread on (SUBJECT) designed to maximize reach, engagement, and conversions. Provide 3 alternative hook options optimized for curiosity, controversy, or authority positioning. Structure the pacing to maintain reader retention with varied sentence lengths, cliffhangers, and embedded value drops. Incorporate meme-worthy moments, relatable analogies, and shareable phrasing to increase repost potential. End with a clear, measurable call-to-action (CTA) aligned with the objectiveâ€”whether driving followers, clicks, or conversions. Deliver the output in a polished format ready to post, with optional hashtags and suggested visuals.',
     preview:'Produce a viral-ready 10-post X thread on (SUBJECT) with strong hooks, engaging pacing, and a clear CTA.'},
   {id:'p3', title:'DeFi Whitepaper Outline', cat:'Crypto', model:'GPT', lang:'EN', price:PRICES.p3,
     full:'You are a professional DeFi strategist tasked with creating a rigorous whitepaper outline for (SUBJECT). The outline should include: problem statement, protocol design, tokenomics structure, governance model, risk analysis, key performance indicators (KPIs), and development roadmap. Ensure the framework is investor-ready, technically sound, and structured for both technical and non-technical audiences. The final output must provide clarity, credibility, and scalability potential for (SUBJECT) within the DeFi ecosystem.',
@@ -29,143 +29,6 @@ let connection = null;
 let provider = null;
 let walletPubkey = null;
 let currentRoute = '';
-
-// ---- Hex Background Animation ----
-let hexCanvas, hexCtx, hexW, hexH, hexDPR;
-let hexagons = [];
-let circles = [];
-let hexAnimationId;
-
-function initHexBackground() {
-  hexCanvas = document.getElementById('hexCanvas');
-  if (!hexCanvas) return;
-  
-  hexCtx = hexCanvas.getContext('2d');
-  resizeHexCanvas();
-  startHexAnimation();
-  
-  window.addEventListener('resize', resizeHexCanvas);
-}
-
-function resizeHexCanvas() {
-  if (!hexCanvas || !hexCtx) return;
-  
-  hexW = window.innerWidth;
-  hexH = window.innerHeight;
-  hexDPR = window.devicePixelRatio || 1;
-  hexCanvas.width = hexW * hexDPR;
-  hexCanvas.height = hexH * hexDPR;
-  hexCtx.setTransform(hexDPR, 0, 0, hexDPR, 0, 0);
-  initHexShapes();
-}
-
-function initHexShapes() {
-  hexagons = [];
-  circles = [];
-  
-  const hexCount = 120;
-  for (let i = 0; i < hexCount; i++) {
-    hexagons.push({
-      x: Math.random() * hexW,
-      y: Math.random() * hexH,
-      r: 15 + Math.random() * 30,
-      opacity: 0.1 + Math.random() * 0.5,
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: (Math.random() - 0.5) * 0.4
-    });
-  }
-  
-  const circleCount = 80;
-  for (let i = 0; i < circleCount; i++) {
-    circles.push({
-      x: Math.random() * hexW,
-      y: Math.random() * hexH,
-      rad: 1 + Math.random() * 6,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3
-    });
-  }
-}
-
-function hexVerts(x, y, r) {
-  const verts = [];
-  for (let i = 0; i < 6; i++) {
-    const a = Math.PI / 3 * i + Math.PI / 6;
-    verts.push({ x: x + r * Math.cos(a), y: y + r * Math.sin(a) });
-  }
-  return verts;
-}
-
-function updateHexShapes() {
-  for (const h of hexagons) {
-    h.x += h.vx;
-    h.y += h.vy;
-    if (h.x < -h.r) h.x = hexW + h.r;
-    if (h.x > hexW + h.r) h.x = -h.r;
-    if (h.y < -h.r) h.y = hexH + h.r;
-    if (h.y > hexH + h.r) h.y = -h.r;
-  }
-  
-  for (const c of circles) {
-    c.x += c.vx;
-    c.y += c.vy;
-    if (c.x < -c.rad * 3) c.x = hexW + c.rad * 3;
-    if (c.x > hexW + c.rad * 3) c.x = -c.rad * 3;
-    if (c.y < -c.rad * 3) c.y = hexH + c.rad * 3;
-    if (c.y > hexH + c.rad * 3) c.y = -c.rad * 3;
-  }
-}
-
-function drawHexShapes() {
-  if (!hexCtx) return;
-  
-  hexCtx.clearRect(0, 0, hexW, hexH);
-  hexCtx.fillStyle = '#03060a';
-  hexCtx.fillRect(0, 0, hexW, hexH);
-  
-  // Draw hexagons
-  for (const h of hexagons) {
-    hexCtx.beginPath();
-    const verts = hexVerts(h.x, h.y, h.r);
-    verts.forEach((v, j) => {
-      if (j === 0) hexCtx.moveTo(v.x, v.y);
-      else hexCtx.lineTo(v.x, v.y);
-    });
-    hexCtx.closePath();
-    hexCtx.strokeStyle = `rgba(0,180,255,${h.opacity})`;
-    hexCtx.lineWidth = 1;
-    hexCtx.stroke();
-  }
-  
-  // Draw circles
-  for (const c of circles) {
-    const grad = hexCtx.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.rad * 3);
-    grad.addColorStop(0, `rgba(0,200,255,0.8)`);
-    grad.addColorStop(1, 'rgba(0,200,255,0)');
-    hexCtx.fillStyle = grad;
-    hexCtx.beginPath();
-    hexCtx.arc(c.x, c.y, c.rad * 3, 0, Math.PI * 2);
-    hexCtx.fill();
-  }
-}
-
-function animateHex() {
-  updateHexShapes();
-  drawHexShapes();
-  hexAnimationId = requestAnimationFrame(animateHex);
-}
-
-function startHexAnimation() {
-  if (hexAnimationId) cancelAnimationFrame(hexAnimationId);
-  hexAnimationId = requestAnimationFrame(animateHex);
-}
-
-function stopHexAnimation() {
-  if (hexAnimationId) {
-    cancelAnimationFrame(hexAnimationId);
-    hexAnimationId = null;
-  }
-}
 
 const $ = (s)=>document.querySelector(s);
 const $$ = (s)=>Array.from(document.querySelectorAll(s));
@@ -351,7 +214,7 @@ const card=(p)=>`
       radial-gradient(80px 80px at 20% 30%, rgba(168,85,247,.25), transparent 60%),
       radial-gradient(80px 80px at 80% 40%, rgba(6,182,212,.25), transparent 60%);"></div>
     <div class="card-body" style="display: flex; flex-direction: column; flex: 1;">
-      <div class="kv"><div><strong>${p.title}</strong><div class="muted">${p.cat} • ${p.model} • ${p.lang}</div></div><span class="badge">${priceLabel(p.price)}</span></div>
+      <div class="kv"><div><strong>${p.title}</strong><div class="muted">${p.cat} â€¢ ${p.model} â€¢ ${p.lang}</div></div><span class="badge">${priceLabel(p.price)}</span></div>
       <p class="muted" style="margin-top:8px;min-height:44px;flex:1">${p.preview}</p>
       <div style="display:flex;gap:8px;margin-top:10px">
         <button class="btn" data-view="${p.id}">Personalize</button>
@@ -477,13 +340,13 @@ function openModal(id, unlocked=false, sig=null){
   
   if (!mTitle || !mMeta || !mText || !modal) return;
   
-  mTitle.textContent = p.title + (unlocked ? ' — Unlocked' : ' — Preview');
-  mMeta.textContent = `${p.cat} • ${p.model} • ${p.lang} — ${priceLabel(p.price)}`;
+  mTitle.textContent = p.title + (unlocked ? ' â€” Unlocked' : ' â€” Preview');
+  mMeta.textContent = `${p.cat} â€¢ ${p.model} â€¢ ${p.lang} â€” ${priceLabel(p.price)}`;
   
   const owned = localStorage.getItem('pf_owned_'+id)==='1' || unlocked;
   const brief = $('#uBrief')?.value?.trim() || '';
   
-  mText.textContent = owned ? p.full : (brief ? (`Preview with your brief: `+brief.slice(0,160)+'…') : p.preview);
+  mText.textContent = owned ? p.full : (brief ? (`Preview with your brief: `+brief.slice(0,160)+'â€¦') : p.preview);
   
   if (copyBtn) copyBtn.classList.toggle('hidden', !owned);
   if (txLink) {
@@ -562,7 +425,7 @@ async function connectWallet(){
     walletPubkey = resp.publicKey;
     const addr = $('#addr');
     const walletBtn = $('#walletBtn');
-    if (addr) addr.textContent = 'Wallet: ' + walletPubkey.toBase58().slice(0,4)+'…'+walletPubkey.toBase58().slice(-4);
+    if (addr) addr.textContent = 'Wallet: ' + walletPubkey.toBase58().slice(0,4)+'â€¦'+walletPubkey.toBase58().slice(-4);
     if (walletBtn) walletBtn.textContent = 'Disconnect Wallet';
     toast('Wallet connected');
   } catch(e) {
@@ -607,14 +470,14 @@ async function buyPrompt(id){
     if (p.price <= 0) {
       savePurchase(id, 'FREE', brief, contact);
       openModal(id, true, null);
-      toast('Unlocked (free) ✅');
+      toast('Unlocked (free) âœ…');
       return;
     }
 
     if (!walletPubkey) { await connectWallet(); if(!walletPubkey) return; }
     
     const amount = p.price;
-    toast('Preparing transaction…');
+    toast('Preparing transactionâ€¦');
     const lamports = Math.round(amount * solanaWeb3.LAMPORTS_PER_SOL);
     const tx = new solanaWeb3.Transaction().add(
       solanaWeb3.SystemProgram.transfer({
@@ -626,14 +489,14 @@ async function buyPrompt(id){
     tx.feePayer = walletPubkey;
     const latest = await connection.getLatestBlockhash('finalized');
     tx.recentBlockhash = latest.blockhash;
-    toast('Waiting for signature…');
+    toast('Waiting for signatureâ€¦');
     const signed = await provider.signTransaction(tx);
     const sig = await connection.sendRawTransaction(signed.serialize());
-    toast('Confirming (finalized)…');
+    toast('Confirming (finalized)â€¦');
     await connection.confirmTransaction({ signature: sig }, 'finalized');
     savePurchase(id, sig, brief, contact);
     openModal(id, true, sig);
-    toast('Unlocked ✅');
+    toast('Unlocked âœ…');
   } catch(e) {
     console.error('Payment error:', e);
     toast('Payment failed or cancelled');
@@ -692,11 +555,8 @@ window.addEventListener('load', async () => {
     toast('Failed to init Solana SDK'); 
   }
 
-  // Initialize hex background
-  initHexBackground();
-
   dropdown('cat', [['__all','All'], ['Design','Design'], ['Marketing','Marketing'], ['Crypto','Crypto'], ['Content','Content']]);
-  dropdown('sort', [['default','Default'], ['priceAsc','Price ↑'], ['priceDesc','Price ↓'], ['alpha','A → Z']]);
+  dropdown('sort', [['default','Default'], ['priceAsc','Price â†‘'], ['priceDesc','Price â†“'], ['alpha','A â†’ Z']]);
 
   setupEventHandlers();
   initDropdownMenu();
