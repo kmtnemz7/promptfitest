@@ -30,6 +30,143 @@ let provider = null;
 let walletPubkey = null;
 let currentRoute = '';
 
+// ---- Hex Background Animation ----
+let hexCanvas, hexCtx, hexW, hexH, hexDPR;
+let hexagons = [];
+let circles = [];
+let hexAnimationId;
+
+function initHexBackground() {
+  hexCanvas = document.getElementById('hexCanvas');
+  if (!hexCanvas) return;
+  
+  hexCtx = hexCanvas.getContext('2d');
+  resizeHexCanvas();
+  startHexAnimation();
+  
+  window.addEventListener('resize', resizeHexCanvas);
+}
+
+function resizeHexCanvas() {
+  if (!hexCanvas || !hexCtx) return;
+  
+  hexW = window.innerWidth;
+  hexH = window.innerHeight;
+  hexDPR = window.devicePixelRatio || 1;
+  hexCanvas.width = hexW * hexDPR;
+  hexCanvas.height = hexH * hexDPR;
+  hexCtx.setTransform(hexDPR, 0, 0, hexDPR, 0, 0);
+  initHexShapes();
+}
+
+function initHexShapes() {
+  hexagons = [];
+  circles = [];
+  
+  const hexCount = 120;
+  for (let i = 0; i < hexCount; i++) {
+    hexagons.push({
+      x: Math.random() * hexW,
+      y: Math.random() * hexH,
+      r: 15 + Math.random() * 30,
+      opacity: 0.1 + Math.random() * 0.5,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4
+    });
+  }
+  
+  const circleCount = 80;
+  for (let i = 0; i < circleCount; i++) {
+    circles.push({
+      x: Math.random() * hexW,
+      y: Math.random() * hexH,
+      rad: 1 + Math.random() * 6,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3
+    });
+  }
+}
+
+function hexVerts(x, y, r) {
+  const verts = [];
+  for (let i = 0; i < 6; i++) {
+    const a = Math.PI / 3 * i + Math.PI / 6;
+    verts.push({ x: x + r * Math.cos(a), y: y + r * Math.sin(a) });
+  }
+  return verts;
+}
+
+function updateHexShapes() {
+  for (const h of hexagons) {
+    h.x += h.vx;
+    h.y += h.vy;
+    if (h.x < -h.r) h.x = hexW + h.r;
+    if (h.x > hexW + h.r) h.x = -h.r;
+    if (h.y < -h.r) h.y = hexH + h.r;
+    if (h.y > hexH + h.r) h.y = -h.r;
+  }
+  
+  for (const c of circles) {
+    c.x += c.vx;
+    c.y += c.vy;
+    if (c.x < -c.rad * 3) c.x = hexW + c.rad * 3;
+    if (c.x > hexW + c.rad * 3) c.x = -c.rad * 3;
+    if (c.y < -c.rad * 3) c.y = hexH + c.rad * 3;
+    if (c.y > hexH + c.rad * 3) c.y = -c.rad * 3;
+  }
+}
+
+function drawHexShapes() {
+  if (!hexCtx) return;
+  
+  hexCtx.clearRect(0, 0, hexW, hexH);
+  hexCtx.fillStyle = '#03060a';
+  hexCtx.fillRect(0, 0, hexW, hexH);
+  
+  // Draw hexagons
+  for (const h of hexagons) {
+    hexCtx.beginPath();
+    const verts = hexVerts(h.x, h.y, h.r);
+    verts.forEach((v, j) => {
+      if (j === 0) hexCtx.moveTo(v.x, v.y);
+      else hexCtx.lineTo(v.x, v.y);
+    });
+    hexCtx.closePath();
+    hexCtx.strokeStyle = `rgba(0,180,255,${h.opacity})`;
+    hexCtx.lineWidth = 1;
+    hexCtx.stroke();
+  }
+  
+  // Draw circles
+  for (const c of circles) {
+    const grad = hexCtx.createRadialGradient(c.x, c.y, 0, c.x, c.y, c.rad * 3);
+    grad.addColorStop(0, `rgba(0,200,255,0.8)`);
+    grad.addColorStop(1, 'rgba(0,200,255,0)');
+    hexCtx.fillStyle = grad;
+    hexCtx.beginPath();
+    hexCtx.arc(c.x, c.y, c.rad * 3, 0, Math.PI * 2);
+    hexCtx.fill();
+  }
+}
+
+function animateHex() {
+  updateHexShapes();
+  drawHexShapes();
+  hexAnimationId = requestAnimationFrame(animateHex);
+}
+
+function startHexAnimation() {
+  if (hexAnimationId) cancelAnimationFrame(hexAnimationId);
+  hexAnimationId = requestAnimationFrame(animateHex);
+}
+
+function stopHexAnimation() {
+  if (hexAnimationId) {
+    cancelAnimationFrame(hexAnimationId);
+    hexAnimationId = null;
+  }
+}
+
 const $ = (s)=>document.querySelector(s);
 const $$ = (s)=>Array.from(document.querySelectorAll(s));
 const toast=(m)=>{const t=$('#toast'); t.textContent=m; t.setAttribute('role', 'alert'); t.style.display='block'; setTimeout(()=>t.classList.add('active'), 10); setTimeout(()=>{t.classList.remove('active'); setTimeout(()=>t.style.display='none', 300);}, 1800);};
@@ -554,6 +691,9 @@ window.addEventListener('load', async () => {
     console.error('Solana connection failed:', e); 
     toast('Failed to init Solana SDK'); 
   }
+
+  // Initialize hex background
+  initHexBackground();
 
   dropdown('cat', [['__all','All'], ['Design','Design'], ['Marketing','Marketing'], ['Crypto','Crypto'], ['Content','Content']]);
   dropdown('sort', [['default','Default'], ['priceAsc','Price ↑'], ['priceDesc','Price ↓'], ['alpha','A → Z']]);
