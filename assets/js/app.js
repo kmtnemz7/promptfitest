@@ -9,7 +9,7 @@ const DATA = [
     full:'You are an award-winning brand designer tasked with creating a complete professional logo design brief for (SUBJECT). The concept must reflect a futuristic yet minimal aesthetic, incorporating constraints such as scalability, brand adaptability, and commercial usability. Define the creative direction through mood boards, color palette specifications (with hex values), and typography guidelines (primary and secondary typefaces with usage rules). Outline the intended emotional response, design hierarchy, and visual balance. Deliver clear export specifications including vector-based formats (SVG/AI) and raster assets (PNG/JPG) optimized for both print and digital applications. Ensure the final outcome is versatile enough for logos, social media branding, and product packaging.',
     preview:'Generate a professional logo brief for (SUBJECT) with creative direction, color palette, typography, and export specs.'},
   {id:'p2', title:'Viral X Thread Prompt', cat:'Marketing', model:'Any', lang:'EN', price:PRICES.p2,
-    full:'Act as a professional viral ghostwriter specializing in growth marketing. Write a 10-post X (Twitter) thread on (SUBJECT) designed to maximize reach, engagement, and conversions. Provide 3 alternative hook options optimized for curiosity, controversy, or authority positioning. Structure the pacing to maintain reader retention with varied sentence lengths, cliffhangers, and embedded value drops. Incorporate meme-worthy moments, relatable analogies, and shareable phrasing to increase repost potential. End with a clear, measurable call-to-action (CTA) aligned with the objectiveâ€”whether driving followers, clicks, or conversions. Deliver the output in a polished format ready to post, with optional hashtags and suggested visuals.',
+    full:'Act as a professional viral ghostwriter specializing in growth marketing. Write a 10-post X (Twitter) thread on (SUBJECT) designed to maximize reach, engagement, and conversions. Provide 3 alternative hook options optimized for curiosity, controversy, or authority positioning. Structure the pacing to maintain reader retention with varied sentence lengths, cliffhangers, and embedded value drops. Incorporate meme-worthy moments, relatable analogies, and shareable phrasing to increase repost potential. End with a clear, measurable call-to-action (CTA) aligned with the objective—whether driving followers, clicks, or conversions. Deliver the output in a polished format ready to post, with optional hashtags and suggested visuals.',
     preview:'Produce a viral-ready 10-post X thread on (SUBJECT) with strong hooks, engaging pacing, and a clear CTA.'},
   {id:'p3', title:'DeFi Whitepaper Outline', cat:'Crypto', model:'GPT', lang:'EN', price:PRICES.p3,
     full:'You are a professional DeFi strategist tasked with creating a rigorous whitepaper outline for (SUBJECT). The outline should include: problem statement, protocol design, tokenomics structure, governance model, risk analysis, key performance indicators (KPIs), and development roadmap. Ensure the framework is investor-ready, technically sound, and structured for both technical and non-technical audiences. The final output must provide clarity, credibility, and scalability potential for (SUBJECT) within the DeFi ecosystem.',
@@ -214,7 +214,7 @@ const card=(p)=>`
       radial-gradient(80px 80px at 20% 30%, rgba(168,85,247,.25), transparent 60%),
       radial-gradient(80px 80px at 80% 40%, rgba(6,182,212,.25), transparent 60%);"></div>
     <div class="card-body" style="display: flex; flex-direction: column; flex: 1;">
-      <div class="kv"><div><strong>${p.title}</strong><div class="muted">${p.cat} â€¢ ${p.model} â€¢ ${p.lang}</div></div><span class="badge">${priceLabel(p.price)}</span></div>
+      <div class="kv"><div><strong>${p.title}</strong><div class="muted">${p.cat} • ${p.model} • ${p.lang}</div></div><span class="badge">${priceLabel(p.price)}</span></div>
       <p class="muted" style="margin-top:8px;min-height:44px;flex:1">${p.preview}</p>
       <div style="display:flex;gap:8px;margin-top:10px">
         <button class="btn" data-view="${p.id}">Personalize</button>
@@ -340,13 +340,13 @@ function openModal(id, unlocked=false, sig=null){
   
   if (!mTitle || !mMeta || !mText || !modal) return;
   
-  mTitle.textContent = p.title + (unlocked ? ' â€” Unlocked' : ' â€” Preview');
-  mMeta.textContent = `${p.cat} â€¢ ${p.model} â€¢ ${p.lang} â€” ${priceLabel(p.price)}`;
+  mTitle.textContent = p.title + (unlocked ? ' — Unlocked' : ' — Preview');
+  mMeta.textContent = `${p.cat} • ${p.model} • ${p.lang} — ${priceLabel(p.price)}`;
   
   const owned = localStorage.getItem('pf_owned_'+id)==='1' || unlocked;
   const brief = $('#uBrief')?.value?.trim() || '';
   
-  mText.textContent = owned ? p.full : (brief ? (`Preview with your brief: `+brief.slice(0,160)+'â€¦') : p.preview);
+  mText.textContent = owned ? p.full : (brief ? (`Preview with your brief: `+brief.slice(0,160)+'…') : p.preview);
   
   if (copyBtn) copyBtn.classList.toggle('hidden', !owned);
   if (txLink) {
@@ -425,7 +425,7 @@ async function connectWallet(){
     walletPubkey = resp.publicKey;
     const addr = $('#addr');
     const walletBtn = $('#walletBtn');
-    if (addr) addr.textContent = 'Wallet: ' + walletPubkey.toBase58().slice(0,4)+'â€¦'+walletPubkey.toBase58().slice(-4);
+    if (addr) addr.textContent = 'Wallet: ' + walletPubkey.toBase58().slice(0,4)+'…'+walletPubkey.toBase58().slice(-4);
     if (walletBtn) walletBtn.textContent = 'Disconnect Wallet';
     toast('Wallet connected');
   } catch(e) {
@@ -470,14 +470,14 @@ async function buyPrompt(id){
     if (p.price <= 0) {
       savePurchase(id, 'FREE', brief, contact);
       openModal(id, true, null);
-      toast('Unlocked (free) âœ…');
+      toast('Unlocked (free) ✅');
       return;
     }
 
     if (!walletPubkey) { await connectWallet(); if(!walletPubkey) return; }
     
     const amount = p.price;
-    toast('Preparing transactionâ€¦');
+    toast('Preparing transaction…');
     const lamports = Math.round(amount * solanaWeb3.LAMPORTS_PER_SOL);
     const tx = new solanaWeb3.Transaction().add(
       solanaWeb3.SystemProgram.transfer({
@@ -489,14 +489,14 @@ async function buyPrompt(id){
     tx.feePayer = walletPubkey;
     const latest = await connection.getLatestBlockhash('finalized');
     tx.recentBlockhash = latest.blockhash;
-    toast('Waiting for signatureâ€¦');
+    toast('Waiting for signature…');
     const signed = await provider.signTransaction(tx);
     const sig = await connection.sendRawTransaction(signed.serialize());
-    toast('Confirming (finalized)â€¦');
+    toast('Confirming (finalized)…');
     await connection.confirmTransaction({ signature: sig }, 'finalized');
     savePurchase(id, sig, brief, contact);
     openModal(id, true, sig);
-    toast('Unlocked âœ…');
+    toast('Unlocked ✅');
   } catch(e) {
     console.error('Payment error:', e);
     toast('Payment failed or cancelled');
@@ -556,7 +556,7 @@ window.addEventListener('load', async () => {
   }
 
   dropdown('cat', [['__all','All'], ['Design','Design'], ['Marketing','Marketing'], ['Crypto','Crypto'], ['Content','Content']]);
-  dropdown('sort', [['default','Default'], ['priceAsc','Price â†‘'], ['priceDesc','Price â†“'], ['alpha','A â†’ Z']]);
+  dropdown('sort', [['default','Default'], ['priceAsc','Price ↑'], ['priceDesc','Price ↓'], ['alpha','A → Z']]);
 
   setupEventHandlers();
   initDropdownMenu();
