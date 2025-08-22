@@ -12,6 +12,10 @@
 </head>
 <body>
 <noscript><style>#pageLoader{display:none}</style></noscript>
+
+<!-- Animated Hex Background -->
+<canvas id="hexCanvas"></canvas>
+
 <div id="pageLoader" class="page-loader" aria-hidden="true">
   <div class="spinner"></div>
 </div>
@@ -78,8 +82,8 @@
 					<h3>3) Unlock</h3>
 					<ul class="muted" style="display:grid; row-gap:12px;">
 						<li>After final on-chain confirmation (a few seconds), the prompt <strong>decrypts and appears</strong>.</li>
-						<li>It’s saved under <strong>My Purchases</strong> at <code>/purchases</code> for future access.</li>
-						<li>If it doesn’t appear instantly, refresh or reconnect your wallet—the purchase is tied to your address.</li>
+						<li>It's saved under <strong>My Purchases</strong> at <code>/purchases</code> for future access.</li>
+						<li>If it doesn't appear instantly, refresh or reconnect your wallet—the purchase is tied to your address.</li>
 					</ul>
 				</div>
 			</div>
@@ -90,7 +94,7 @@
 					<!-- Aug-Sep Phase -->
 					<div class="roadmap-phase">
 						<div class="phase-header">
-							<span class="phase-badge">Aug–Sep 2025</span>
+							<span class="phase-badge">Aug—Sep 2025</span>
 							<h3>Hardening & Mainnet</h3>
 						</div>
 						<div class="phase-content">
@@ -108,7 +112,7 @@
 					<!-- Oct-Dec Phase -->
 					<div class="roadmap-phase">
 						<div class="phase-header">
-							<span class="phase-badge">Oct–Dec 2025</span>
+							<span class="phase-badge">Oct—Dec 2025</span>
 							<h3>Public Beta & Monetization</h3>
 						</div>
 						<div class="phase-content">
@@ -287,6 +291,7 @@
       radial-gradient(90px 90px at 80% 40%, rgba(6,182,212,.25), transparent 60%);padding:12px;overflow:auto;">
       <p id="mText" style="margin:0;"></p>
     </div>
+
 
     <div style="display:flex;gap:8px;margin-top:12px">
       <a id="txLink" target="_blank" class="btn hidden">View on Solscan</a>
